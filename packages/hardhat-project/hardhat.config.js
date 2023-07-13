@@ -1,12 +1,11 @@
-import { HardhatUserConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-toolbox";
+require("@nomicfoundation/hardhat-toolbox");
+require("dotenv").config()
+require('@openzeppelin/hardhat-upgrades');
 
-// .env
-import dotenv from "dotenv"
-dotenv.config()
 const { INFURA_API_KEY, ETH_PRIVATE_KEY } = process.env
 
-const config: HardhatUserConfig = {
+/** @type import('hardhat/config').HardhatUserConfig */
+module.exports = {
   solidity: "0.8.19",
   networks: {
     hardhat: {
@@ -25,5 +24,3 @@ const config: HardhatUserConfig = {
     enabled: true,
   },
 };
-
-export default config;

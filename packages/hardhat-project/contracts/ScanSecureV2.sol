@@ -21,7 +21,7 @@ import { LibScanSecure } from "./libs/LibScanSecure.sol";
  * @custom:experimental This is an experimental contract.
  */
 
-contract ScanSecure is OwnableUpgradeable, ScanSecureAccess, ScanSecureStore  {
+contract ScanSecureV2 is OwnableUpgradeable, ScanSecureAccess, ScanSecureStore  {
     constructor() { }
 
     // Internal storage
@@ -32,5 +32,9 @@ contract ScanSecure is OwnableUpgradeable, ScanSecureAccess, ScanSecureStore  {
     receive() external payable {}
 
     fallback() external payable {}
+
+    function getTest() external pure returns (bool) {
+        return true;
+    }
 
 }
