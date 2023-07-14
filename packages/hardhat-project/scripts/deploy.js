@@ -7,12 +7,15 @@
 const hre = require("hardhat");
 
 async function main() {
-  const scanSecure = await hre.ethers.deployContract("ScanSecure");
-  await scanSecure.waitForDeployment();
-
-  console.log(
-    `ScanSecure deployed at ${scanSecure.target}`
-  );
+    // Deploy ScanSecure    
+    const ScanSecure = await hre.ethers.getContractFactory("ScanSecure");
+    const scanSecure = await ScanSecure.deploy("ipfs://monurl.com/<id>.json");
+    
+    await scanSecure.deployed();
+    
+    console.log(
+      `ScanSecure deployed to ${scanSecure.address}`
+    );
 }
 
 // We recommend this pattern to be able to use async/await everywhere

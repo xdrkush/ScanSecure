@@ -1,6 +1,6 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("dotenv").config()
-require('@openzeppelin/hardhat-upgrades');
+// require('@openzeppelin/hardhat-upgrades');
 
 const { INFURA_API_KEY, ETH_PRIVATE_KEY } = process.env
 
@@ -9,7 +9,7 @@ module.exports = {
   solidity: "0.8.19",
   networks: {
     hardhat: {
-      blockGasLimit: 3000000 // ! Default 30_000_000
+      blockGasLimit: 30000000 // ! Default 30_000_000
     },
     sepolia: {
       url: `https://sepolia.infura.io/v3/${INFURA_API_KEY}`,

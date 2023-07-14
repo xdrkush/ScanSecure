@@ -2,46 +2,68 @@
 pragma solidity 0.8.19;
 
 library LibScanSecure {
+
     // Events
     event Whitelisted(address addr);
-    event newEvent(uint event_id, address author_id);
+    event Certification(address addr, CertificationStatus newStatus);
+    event EventCreated(uint event_id, address author_id);
+    event EventStatusChanged(
+        uint event_id,
+        EventStatus oldStatus,
+        EventStatus newStatus
+    );
     event newTickets(uint event_id, uint ticket_id, address author_id);
     event ticketBuyed(uint ticket_id, address buyer);
 
     enum EventStatus {
-        eventCreated,
+        created,
         buyingTicket,
-        soldOut
+        soldOut,
+        closed
     }
     enum TicketStatus {
         buyable,
-        buyed,
+        saleable,
         consumed
     }
+    enum CertificationStatus {
+        noAsked,
+        pending,
+        succeeded,
+        canceled
+    }
 
+    /*
+     * Data
+     * ***************** */
     struct Data {
-        mapping(address => bool) whitelist;
-        uint store;
+        mapping(address => User) members;
+        uint128 totalMembers;
+        Event[] events;
+        uint128 eventLastId;
+        mapping(uint128 => Ticket) tickets;
+        uint128 totalTickets;
     }
 
     struct User {
-        bytes32 pseudo;
-        bool isCertified;
+        string pseudo;
+        CertificationStatus status;
     }
     struct Event {
-        bytes32 title;
-        bytes32 description;
+        uint128 id;
+        string title;
         bytes32 hash_ipfs;
         EventStatus status;
+        address author;
     }
     struct Ticket {
-        bytes32 ticket;
+        uint128 id;
         bytes32 hash_ipfs;
         bool isValid;
         uint price;
         TicketStatus status;
     }
-    
+
     /*////////////////////////////////////////////////////////////////////////////////////////////////
                                             STORAGE LOCATION
     ////////////////////////////////////////////////////////////////////////////////////////////////*/
