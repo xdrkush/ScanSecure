@@ -10,7 +10,7 @@ import {LibStorage} from "../libs/LibStorage.sol";
 import {ADMIN_ROLE, CREATOR_ROLE, MEMBER_ROLE} from "../utils/Roles.sol";
 
 //
-abstract contract ScanSecureStore is RoleControl, ScanSecureTicketManager {
+abstract contract ScanSecureStore is ScanSecureTicketManager {
 
     constructor(string memory _uri) ScanSecureTicketManager(_uri) {}
 
@@ -90,7 +90,7 @@ abstract contract ScanSecureStore is RoleControl, ScanSecureTicketManager {
     }
 
     // Internal storage
-    function _data() internal pure virtual returns (LibStorage.Data storage) {
+    function _data() internal pure virtual override(ScanSecureTicketManager) returns (LibStorage.Data storage) {
         return LibStorage.accessData();
     }
 }

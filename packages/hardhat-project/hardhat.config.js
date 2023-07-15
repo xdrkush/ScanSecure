@@ -6,7 +6,13 @@ const { INFURA_API_KEY, ETH_PRIVATE_KEY } = process.env
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  solidity: "0.8.19",
+  solidity: {
+    compilers: [{
+      version: "0.8.19"
+    }, {
+      version: "0.4.17",
+    }]
+  },
   networks: {
     hardhat: {
       blockGasLimit: 30000000 // ! Default 30_000_000

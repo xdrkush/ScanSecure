@@ -7,7 +7,17 @@
 const hre = require("hardhat");
 
 async function main() {
-    // Deploy ScanSecure    
+    // Deploy ScanSecure
+
+    // const TetherToken = await hre.ethers.getContractFactory("TetherToken");
+    // const tetherToken = await TetherToken.deploy(420000000);
+    
+    // await tetherToken.deployed();
+    
+    // console.log(
+    //   `TetherToken deployed to ${tetherToken.address}`
+    // );
+
     const ScanSecure = await hre.ethers.getContractFactory("ScanSecure");
     const scanSecure = await ScanSecure.deploy("ipfs://monurl.com/<id>.json");
     

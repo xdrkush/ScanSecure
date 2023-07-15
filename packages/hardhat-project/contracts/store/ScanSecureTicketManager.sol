@@ -3,6 +3,7 @@ pragma solidity 0.8.19;
 
 // Contract
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../access/RoleControl.sol";
 
 // Library
@@ -11,7 +12,14 @@ import {ADMIN_ROLE, CREATOR_ROLE, MEMBER_ROLE} from "../utils/Roles.sol";
 
 //
 abstract contract ScanSecureTicketManager is ERC1155, RoleControl {
-    constructor(string memory _uri) ERC1155(_uri) {}
+    // IERC20 public usdtToken;
+    constructor(string memory _uri) ERC1155(_uri) {
+        // usdtToken = IERC20(_addrUSDT);
+    }
+
+    function buyTicket(uint _ticket_id) external {
+
+    }
 
     /*
      * Tickets
@@ -33,8 +41,8 @@ abstract contract ScanSecureTicketManager is ERC1155, RoleControl {
     //     return data.members[_addr];
     // }
 
-    // // Internal storage
-    // function _data() internal pure returns (LibStorage.Data storage) {
-    //     return LibStorage.accessData();
-    // }
+    // Internal storage
+    function _data() internal pure virtual returns (LibStorage.Data storage) {
+        return LibStorage.accessData();
+    }
 }
