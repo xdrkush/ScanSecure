@@ -66,9 +66,9 @@ abstract contract ScanSecureStore is ScanSecureAccess {
      * **************** */
 
     //  function createTickets(
-    //     uint128 _event_id,
+    //     uint _event_id,
     //     bytes32 _uri,
-    //     uint128 _quantity
+    //     uint _quantity
     // ) external onlyRole(CREATOR_ROLE) {
     //     LibScanSecure.Data storage data = _data();
     //     require(msg.sender == data.events[_event_id].author, "Vous devez etre author de l event");

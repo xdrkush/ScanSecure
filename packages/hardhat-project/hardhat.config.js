@@ -26,7 +26,20 @@ module.exports = {
       accounts: [`${ETH_PRIVATE_KEY}`]
     }
   },
-  gasReporter: {
-    enabled: true,
+  settings: {
+    optimizer: {
+      enabled: true,
+      runs: 1000,
+    },
   },
+  gasReporter: {
+    enabled: false,
+  },
+  contractSizer: {
+    alphaSort: true,
+    disambiguatePaths: false,
+    runOnCompile: true,
+    strict: true,
+    only: [':ERC20$'],
+  }
 };

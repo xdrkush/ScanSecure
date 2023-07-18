@@ -6,26 +6,40 @@
 // global scope, and execute the script.
 const hre = require("hardhat");
 
+const SizeContract = async (_name) => {
+  const { deployedBytecode, bytecode } = await hre.artifacts.readArtifact("ScanSecure");
+  const deploySize = Buffer.from(
+    deployedBytecode.replace(/__\$\w*\$__/g, '0'.repeat(40)).slice(2),
+    'hex'
+  ).length;
+  const initSize = Buffer.from(
+    bytecode.replace(/__\$\w*\$__/g, '0'.repeat(40)).slice(2),
+    'hex'
+  ).length;
+
+  console.log('SizeContract', deploySize, initSize)
+}
+
 async function main() {
-    // Deploy ScanSecure
+  // Deploy ScanSecure
 
-    // const TetherToken = await hre.ethers.getContractFactory("TetherToken");
-    // const tetherToken = await TetherToken.deploy(420000000);
-    
-    // await tetherToken.deployed();
-    
-    // console.log(
-    //   `TetherToken deployed to ${tetherToken.address}`
-    // );
+  const TetherToken = await hre.ethers.getContractFactory("TetherToken");
+  const tetherToken = await TetherToken.deploy(hre.ethers.utils.parseEther('420000000'));
+  await tetherToken.deployed();
 
-    const ScanSecure = await hre.ethers.getContractFactory("ScanSecure");
-    const scanSecure = await ScanSecure.deploy("ipfs://monurl.com/<id>.json");
-    
-    await scanSecure.deployed();
-    
-    console.log(
-      `ScanSecure deployed to ${scanSecure.address}`
-    );
+  console.log(
+    `TetherToken deployed to ${tetherToken.address}`
+  );
+
+  const ScanSecure = await hre.ethers.getContractFactory("ScanSecure");
+  const scanSecure = await ScanSecure.deploy("ipfs://monsuperurl.io/", tetherToken.address);
+  await scanSecure.deployed();
+
+  console.log(
+    `ScanSecure deployed to ${scanSecure.address}`
+  );
+  
+  SizeContract("ScanSecure")
 }
 
 // We recommend this pattern to be able to use async/await everywhere

@@ -17,6 +17,7 @@
     "sc:help": "npm run help --workspace=hardhat-project",
     "sc:test": "npm run test --workspace=hardhat-project",
     "sc:coverage": "npm run coverage --workspace=hardhat-project",
+    "sc:size": "npm run size --workspace=hardhat-project",
     "sc:deploy:local": "npm run deploy:local --workspace=hardhat-project",
     "sc:deployProxy:local": "npm run deployProxy:local --workspace=hardhat-project",
     "sc:upgrade:local": "npm run upgrade:local --workspace=hardhat-project",

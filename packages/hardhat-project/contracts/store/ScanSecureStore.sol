@@ -2,95 +2,46 @@
 pragma solidity 0.8.19;
 
 // Contract
-import "../access/RoleControl.sol";
-import "./ScanSecureTicketManager.sol";
+import "../store/ScanSecureTicketManager.sol";
+import "../access/ScanSecureAccess.sol";
 
 // Library
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {LibStorage} from "../libs/LibStorage.sol";
+
+// Utils
 import {ADMIN_ROLE, CREATOR_ROLE, MEMBER_ROLE} from "../utils/Roles.sol";
 
 //
 abstract contract ScanSecureStore is ScanSecureTicketManager {
-
-    constructor(string memory _uri) ScanSecureTicketManager(_uri) {}
-
-    /*
-     * Events
-     * **************** */
+    constructor(
+        string memory _uri,
+        address _addrUSDT
+    ) ScanSecureTicketManager(_uri, _addrUSDT) {}
 
     function createEvent(
-        string calldata _title,
-        string calldata _hash_ipfs
-    ) external checkedRole(CREATOR_ROLE) {
-        LibStorage.Data storage data = _data();
-        uint128 newId = data.eventLastId++;
-
-        data.events.push(
-            LibStorage.Event(
-                newId,
-                _title,
-                _hash_ipfs,
-                LibStorage.EventStatus.created,
-                msg.sender
-            )
-        );
-
-        emit LibStorage.EventCreated(data.eventLastId, msg.sender);
+        string calldata _title
+    ) external onlyRole(CREATOR_ROLE) {
+        events.push(LibStorage.Event(_title, 0, 0, msg.sender, LibStorage.EventStatus.created));
+        emit LibStorage.EventCreated(eventLastId, msg.sender);
     }
 
     function setStatusEvent(
-        uint _event_id,
-        uint8 _newStatus
-    ) external checkedRole(CREATOR_ROLE) {
-        LibStorage.Data storage data = _data();
-        require(
-            msg.sender == data.events[_event_id].author,
-            "Vous devez etre author de l event"
-        );
+        uint _event_id
+    ) external onlyRole(CREATOR_ROLE) {
+        if (msg.sender != events[_event_id].author)
+            revert("Vous devez etre author de l event");
+            
+        LibStorage.EventStatus s = LibStorage.EventStatus(uint(events[_event_id].status));
+        LibStorage.EventStatus newS = LibStorage.EventStatus(uint(events[_event_id].status) +1);
 
-        LibStorage.EventStatus oldStatus = data.events[_event_id].status;
-        LibStorage.EventStatus newStatus = LibStorage.EventStatus(_newStatus);
+        events[_event_id].status = newS;
 
-        data.events[_event_id].status = newStatus;
-
-        emit LibStorage.EventStatusChanged(
-            data.events[_event_id].id,
-            oldStatus,
-            newStatus
-        );
+        emit LibStorage.EventStatusChanged(_event_id, s, newS);
     }
 
-    function getEvent(
-        uint128 _event_id
-    ) external view returns (LibStorage.Event memory) {
-        LibStorage.Data storage data = _data();
-        return data.events[_event_id];
-    }
-
-    /*
-     * Tickets
-     * **************** */
-    function createTickets(
-        uint128 _event_id,
-        uint128 _quantity
-    ) external checkedRole(CREATOR_ROLE) {
-        LibStorage.Data storage data = _data();
-        require(
-            msg.sender == data.events[_event_id].author,
-            "Vous devez etre author de l event"
-        );
-        _mint(msg.sender, _event_id, _quantity, "");
-    }
-
-    function getTickets(
-        uint128 _ticket_id
-    ) external view returns (LibStorage.Ticket memory) {
-        LibStorage.Data storage data = _data();
-        return data.tickets[_ticket_id];
-    }
-
-    // Internal storage
-    function _data() internal pure virtual override(ScanSecureTicketManager) returns (LibStorage.Data storage) {
-        return LibStorage.accessData();
+    function getEvent(uint _event_id) external view returns (LibStorage.Event memory) {
+        require(_event_id < events.length, "Evenement inexistant");
+        return events[_event_id];
     }
 }
