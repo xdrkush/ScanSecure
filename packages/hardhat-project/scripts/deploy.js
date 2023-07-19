@@ -26,15 +26,20 @@ async function main() {
   const TetherToken = await hre.ethers.getContractFactory("TetherToken");
   const tetherToken = await TetherToken.deploy(hre.ethers.utils.parseEther('420000000'));
   await tetherToken.deployed();
-
   console.log(
     `TetherToken deployed to ${tetherToken.address}`
   );
 
-  const ScanSecure = await hre.ethers.getContractFactory("ScanSecure");
-  const scanSecure = await ScanSecure.deploy("ipfs://monsuperurl.io/", tetherToken.address);
-  await scanSecure.deployed();
+  const ScanSecureERC1155 = await hre.ethers.getContractFactory("ScanSecureERC1155");
+  const scanSecureERC1155 = await ScanSecureERC1155.deploy("ipfs://monsuperurl.io/");
+  await scanSecureERC1155.deployed();
+  console.log(
+    `ScanSecureERC1155 deployed to ${scanSecureERC1155.address}`
+  );
 
+  const ScanSecure = await hre.ethers.getContractFactory("ScanSecure");
+  const scanSecure = await ScanSecure.deploy(tetherToken.address, scanSecureERC1155.address);
+  await scanSecure.deployed();
   console.log(
     `ScanSecure deployed to ${scanSecure.address}`
   );

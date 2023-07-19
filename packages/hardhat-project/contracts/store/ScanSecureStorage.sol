@@ -2,24 +2,26 @@
 pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import {LibStorage} from "../libs/LibStorage.sol";
+import "./ScanSecureERC1155.sol";
+import "./ScanSecureLibStorage.sol";
+import {LibFees} from "../libs/LibFees.sol";
 
-abstract contract ScanSecureStorage {
-    ERC20 internal usdtToken;
+abstract contract ScanSecureStorage is ScanSecureLibStorage {
+    ERC20 usdtToken;
+    ScanSecureERC1155 ScErc1155;
     address internal firstOwner;
 
-    constructor(address _addrUSDT) {
+    constructor(address _addrUSDT, address _addrERC1155) {
+        ScErc1155 = ScanSecureERC1155(_addrERC1155);
         usdtToken = ERC20(_addrUSDT);
         firstOwner = msg.sender;
     }
 
     // State
-    LibStorage.Event[] events;
-    mapping(address => LibStorage.User) members;
-    mapping(uint => mapping(uint => LibStorage.Ticket)) ticketsValidity;
+    Event[] events;
+    mapping(address => User) members;
+    mapping(uint => mapping(uint => Ticket)) ticketsValidity;
     uint eventLastId;
     uint totalMembers;
-    uint ticketLastId;
-    uint totalTickets;
 
 }

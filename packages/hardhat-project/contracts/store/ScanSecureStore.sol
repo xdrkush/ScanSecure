@@ -7,7 +7,6 @@ import "../access/ScanSecureAccess.sol";
 
 // Library
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import {LibStorage} from "../libs/LibStorage.sol";
 
 // Utils
 import {ADMIN_ROLE, CREATOR_ROLE, MEMBER_ROLE} from "../utils/Roles.sol";
@@ -15,33 +14,35 @@ import {ADMIN_ROLE, CREATOR_ROLE, MEMBER_ROLE} from "../utils/Roles.sol";
 //
 abstract contract ScanSecureStore is ScanSecureTicketManager {
     constructor(
-        string memory _uri,
-        address _addrUSDT
-    ) ScanSecureTicketManager(_uri, _addrUSDT) {}
+        address _addrUSDT,
+        address _addrERC1155
+    ) ScanSecureTicketManager(_addrUSDT, _addrERC1155) {}
 
     function createEvent(
         string calldata _title
     ) external onlyRole(CREATOR_ROLE) {
-        events.push(LibStorage.Event(_title, 0, 0, msg.sender, LibStorage.EventStatus.created));
-        emit LibStorage.EventCreated(eventLastId, msg.sender);
+        require(bytes(_title).length > 0, "Title null is not accepted");
+        events.push(Event(_title, 0, 0, msg.sender, EventStatus.created));
+        ++eventLastId;
+        emit EventCreated(eventLastId, msg.sender);
     }
 
     function setStatusEvent(
         uint _event_id
-    ) external onlyRole(CREATOR_ROLE) {
+    ) external {
         if (msg.sender != events[_event_id].author)
-            revert("Vous devez etre author de l event");
+            revert("You are not creator of event");
             
-        LibStorage.EventStatus s = LibStorage.EventStatus(uint(events[_event_id].status));
-        LibStorage.EventStatus newS = LibStorage.EventStatus(uint(events[_event_id].status) +1);
+        EventStatus s = EventStatus(uint(events[_event_id].status));
+        EventStatus newS = EventStatus(uint(events[_event_id].status) +1);
 
         events[_event_id].status = newS;
 
-        emit LibStorage.EventStatusChanged(_event_id, s, newS);
+        emit EventStatusChanged(_event_id, s, newS);
     }
 
-    function getEvent(uint _event_id) external view returns (LibStorage.Event memory) {
-        require(_event_id < events.length, "Evenement inexistant");
+    function getEvent(uint _event_id) external view returns (Event memory) {
+        require(_event_id > 0 && _event_id < events.length, "Event not exist");
         return events[_event_id];
     }
 }

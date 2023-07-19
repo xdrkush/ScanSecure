@@ -2,25 +2,38 @@
 pragma solidity 0.8.19;
 
 // Contract
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "../access/ScanSecureAccess.sol";
+import "./ScanSecureERC1155.sol";
 
 import {LibFees} from "../libs/LibFees.sol";
-import {LibStorage} from "../libs/LibStorage.sol";
 
 //
-abstract contract ScanSecureTicketManager is ERC1155, ScanSecureAccess {
+abstract contract ScanSecureTicketManager is ScanSecureAccess {
     uint private fees = 5;
 
     constructor(
-        string memory _uri,
-        address _addrUSDT
-    ) ERC1155(_uri) ScanSecureAccess(_addrUSDT) {}
+        address _addrUSDT,
+        address _addrERC1155
+    ) ScanSecureAccess(_addrUSDT, _addrERC1155) {}
+
+    modifier checkIsBuyer() {
+        if (
+            hasRole(MEMBER_ROLE, msg.sender) ||
+            hasRole(CREATOR_ROLE, msg.sender) ||
+            hasRole(ADMIN_ROLE, msg.sender)
+        ) {
+            _;
+        } else revert("No Buyer");
+    }
 
     function getTicket(
         uint _event_id,
         uint _ticket_id
-    ) external view returns (LibStorage.Ticket memory) {
+    ) external view returns (Ticket memory) {
+        require(
+            ticketsValidity[_event_id][_ticket_id].price > 0,
+            "Ticket not exist"
+        );
         return ticketsValidity[_event_id][_ticket_id];
     }
 
@@ -29,46 +42,47 @@ abstract contract ScanSecureTicketManager is ERC1155, ScanSecureAccess {
         uint _quantity,
         uint _price
     ) external onlyRole(CREATOR_ROLE) {
+        require(_event_id >= 0 && _event_id <= eventLastId, "Event not exist");
         require(
             msg.sender == events[_event_id].author,
-            "Vous devez etre author de l event"
+            "You are not author of event"
         );
-        require(_price > 0, "Not rigth price");
-        require(_quantity > 0, "Not rigth quantity");
+        require(_price > 0 && _quantity > 0, "Not rigth price or quantity");
 
-        _mint(msg.sender, _event_id, _quantity, "");
-        setApprovalForAll(address(this), true);
+        ScErc1155.mint(msg.sender, _event_id, _quantity);
 
         events[_event_id].limitTickets = _quantity;
-        ticketsValidity[_event_id][0] = LibStorage.Ticket(
-            false,
+        ticketsValidity[_event_id][0] = Ticket(
             _price,
             msg.sender,
-            LibStorage.TicketStatus.consumed
+            TicketStatus.saleable
         );
 
-        emit LibStorage.TicketPurchased(_event_id, 0, msg.sender);
-
-        emit LibStorage.NewTickets(_event_id, _quantity, msg.sender);
+        emit NewTickets(_event_id, _quantity, msg.sender);
     }
 
-    function buyTicket(
-        uint _event_id,
-        uint _quantity
-    ) external payable onlyRole(MEMBER_ROLE) {
+    function buyTicket(uint _event_id, uint _quantity) external payable checkIsBuyer {
+        require(_event_id >= 0 && _event_id <= eventLastId, "Event not exist");
+        Event storage e = events[_event_id];
+        require(e.totalSold < e.limitTickets, "Sold Out");
+        require(e.limitTickets - e.totalSold >= _quantity, "No more ticket");
         require(
-            events[_event_id].status == LibStorage.EventStatus.buyingTicket,
-            "Its not rigth status"
+            _quantity > 0 && _quantity <= 100,
+            "Quantity should be between zero & 100"
         );
+        require(e.status == EventStatus.buyingTicket, "Its not rigth status");
 
-        uint totalPrice = ticketsValidity[_event_id][0].price * _quantity;
+        uint totalPrice = _quantity * ticketsValidity[_event_id][0].price;
         uint totalFees = LibFees.calcFees(totalPrice);
+        uint totalCost = totalPrice + totalFees;
 
-        require(
-            usdtToken.balanceOf(msg.sender) > totalPrice + totalFees,
-            "You have not the fund"
-        );
+        require(usdtToken.balanceOf(msg.sender) >= totalCost, "Not fund");
+
         address seller = events[_event_id].author;
+        require(
+            ScErc1155.isApprovedForAll(seller, address(this)),
+            "Contract not approved to spend ticket"
+        );
 
         // Paid fees for contract
         usdtToken.transferFrom(msg.sender, address(this), totalFees);
@@ -80,7 +94,7 @@ abstract contract ScanSecureTicketManager is ERC1155, ScanSecureAccess {
             totalPrice
         );
 
-        ERC1155(address(this)).safeTransferFrom(
+        ScErc1155.safeTransferFrom(
             address(seller),
             msg.sender,
             _event_id,
@@ -91,56 +105,68 @@ abstract contract ScanSecureTicketManager is ERC1155, ScanSecureAccess {
         for (uint i = 0; i < _quantity; i++) {
             ticketsValidity[_event_id][
                 events[_event_id].totalSold + i + 1
-            ] = LibStorage.Ticket(
-                true,
+            ] = Ticket(
                 ticketsValidity[_event_id][0].price,
                 msg.sender,
-                LibStorage.TicketStatus.saleable
+                TicketStatus.saleable
             );
         }
 
-        emit LibStorage.TicketPurchased(_event_id, _quantity, msg.sender);
+        emit TicketOwnered(_event_id, _quantity, msg.sender);
 
         events[_event_id].totalSold += _quantity;
     }
 
-    function consumeTicket(
-        uint _event_id,
-        uint _ticket_id
-    ) external onlyRole(MEMBER_ROLE) {
-        require(balanceOf(msg.sender, _event_id) > 0, "You have not ticket");
+    function consumeTicket(uint _event_id, uint _ticket_id) external {
         require(
-            ticketsValidity[_event_id][_ticket_id].isValid,
+            ticketsValidity[_event_id][_ticket_id].price > 0,
+            "Ticket not exist"
+        );
+        require(
+            ScErc1155.balanceOf(msg.sender, _event_id) > 0,
+            "You have not ticket"
+        );
+        require(
+            ticketsValidity[_event_id][_ticket_id].status ==
+                TicketStatus.saleable,
             "Ticket consumed"
         );
 
-        ticketsValidity[_event_id][_ticket_id].isValid = false;
+        ticketsValidity[_event_id][_ticket_id].status = TicketStatus.consumed;
 
-        emit LibStorage.TicketConsumed(_event_id, _ticket_id, msg.sender);
+        emit TicketConsumed(_event_id, _ticket_id, msg.sender);
     }
 
     function sumRecovery() external onlyRole(ADMIN_ROLE) {
         uint totalSum = usdtToken.balanceOf(address(this));
         usdtToken.transfer(firstOwner, totalSum);
-        emit LibStorage.SumRecovered(totalSum, msg.sender);
+        emit SumRecovered(totalSum, msg.sender);
     }
 
-    // function offerTicket(
-    //     address _addr,
-    //     uint _event_id,
-    //     uint _ticket_id
-    // ) external onlyRole(MEMBER_ROLE) {
-    //     require(balanceOf(msg.sender, _event_id) > 0, "Not fund");
+    function offerTicket(
+        address _addr,
+        uint _event_id,
+        uint _ticket_id
+    ) external onlyRole(CREATOR_ROLE) {
+        require(
+            ticketsValidity[_event_id][_ticket_id].price > 0,
+            "Ticket not exist"
+        );
 
-    //     safeTransferFrom(msg.sender, _addr, _event_id, 1, "");
-    //     ticketsValidity[_event_id][_ticket_id].owner = _addr;
+        require(
+            ScErc1155.balanceOf(msg.sender, _event_id) > 0,
+            "You dont have a ticket"
+        );
 
-    //     emit LibStorage.TicketPurchased(_event_id, 1, _addr);
-    // }
+        ScErc1155.safeTransferFrom(
+            address(msg.sender),
+            _addr,
+            _event_id,
+            1,
+            ""
+        );
+        ticketsValidity[_event_id][_ticket_id].owner = _addr;
 
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view override(ERC1155, AccessControl) returns (bool) {
-        return super.supportsInterface(interfaceId);
+        emit TicketOwnered(_event_id, 1, _addr);
     }
 }

@@ -9,17 +9,17 @@ import {ADMIN_ROLE, CREATOR_ROLE, MEMBER_ROLE} from "./utils/Roles.sol";
 
 contract ScanSecure is ScanSecureStore {
     constructor(
-        string memory _uri,
-        address _addrUSDT
-    ) ScanSecureStore(_uri, _addrUSDT) {
+        address _addrUSDT,
+        address _addrERC1155
+    ) ScanSecureStore(_addrUSDT, _addrERC1155) {
         _initialize();
     }
 
-    function _initialize() internal {
-        _grantRole(ADMIN_ROLE, msg.sender);
-        _grantRole(CREATOR_ROLE, msg.sender);
+    function _initialize() private {
         _grantRole(MEMBER_ROLE, msg.sender);
-        _setupRole(ADMIN_ROLE, msg.sender);
+        _grantRole(CREATOR_ROLE, msg.sender);
+        _grantRole(ADMIN_ROLE, msg.sender);
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _setRoleAdmin(DEFAULT_ADMIN_ROLE, ADMIN_ROLE);
     }
 

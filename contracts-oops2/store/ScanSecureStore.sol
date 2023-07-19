@@ -90,8 +90,6 @@ abstract contract ScanSecureStore is RoleControl {
         ticketManager.setApprovalForAll(address(this), true);
 
         data.events[_event_id].limitTickets = _quantity;
-        data.ticketsValidity[_event_id][0].isValid = false;
-        data.ticketsValidity[_event_id][0].isValid = false;
         data.ticketsValidity[_event_id][0].price = _price;
         data.ticketsValidity[_event_id][0].owner = msg.sender;
 

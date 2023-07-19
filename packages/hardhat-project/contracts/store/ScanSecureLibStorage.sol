@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.19;
 
-library LibStorage {
+contract ScanSecureLibStorage {
     struct User {
         string pseudo;
         CertificationStatus status;
@@ -14,7 +14,6 @@ library LibStorage {
         EventStatus status;
     }
     struct Ticket {
-        bool isValid;
         uint price;
         address owner;
         TicketStatus status;
@@ -30,7 +29,7 @@ library LibStorage {
         EventStatus newStatus
     );
     event NewTickets(uint event_id, uint quantity, address author_id);
-    event TicketPurchased(uint event_id, uint _quantity, address buyer);
+    event TicketOwnered(uint event_id, uint _quantity, address buyer);
     event TicketConsumed(uint event_id, uint ticket_id, address consumer);
     event SumRecovered(uint sum, address collector);
 
@@ -49,4 +48,7 @@ library LibStorage {
         pending,
         succeeded
     }
+
+    // Error
+    error MisssingRole (bytes32 role, address caller);
 }
