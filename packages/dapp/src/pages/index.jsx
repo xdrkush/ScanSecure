@@ -8,7 +8,6 @@ export default function Home() {
     <MainLayout>
       <Grid py={3} minH={"20vh"}>
         <Box>Home</Box>
-        <Register />
       </Grid>
     </MainLayout>
   )
