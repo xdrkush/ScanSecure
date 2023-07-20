@@ -130,7 +130,7 @@ export function useScanSecure() {
         } catch (error) {
             setNotif({ type: "error", message: String(error) })
         }
-    }, [address, getUser, setNotif])
+    }, [address, setNotif])
 
     useEffect(() => {
         if (!address || !scanSecureSC || !contractIsConnected) return;
