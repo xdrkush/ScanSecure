@@ -22,14 +22,14 @@ contract ScanSecureLibStorage {
     event Whitelisted(address addr);
     event AskCertification(address addr, string message);
     event Certified(address addr, CertificationStatus newStatus);
-    event EventCreated(uint event_id, address author_id);
+    event EventCreated(uint event_id, address author);
     event EventStatusChanged(
         uint event_id,
         EventStatus oldStatus,
         EventStatus newStatus
     );
-    event NewTickets(uint event_id, uint quantity, address author_id);
-    event TicketOwnered(uint event_id, uint _quantity, address buyer);
+    event NewTickets(uint event_id, uint quantity, address author);
+    event TicketOwnered(uint event_id, uint quantity, address buyer);
     event TicketConsumed(uint event_id, uint ticket_id, address consumer);
     event SumRecovered(uint sum, address collector);
 

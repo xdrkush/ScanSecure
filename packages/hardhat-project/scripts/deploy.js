@@ -24,7 +24,7 @@ async function main() {
   // Deploy ScanSecure
 
   const TetherToken = await hre.ethers.getContractFactory("TetherToken");
-  const tetherToken = await TetherToken.deploy(hre.ethers.utils.parseEther('420000000'));
+  const tetherToken = await TetherToken.deploy();
   await tetherToken.deployed();
   console.log(
     `TetherToken deployed to ${tetherToken.address}`

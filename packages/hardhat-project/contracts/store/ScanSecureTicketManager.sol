@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.19;
-
+import "hardhat/console.sol";
 // Contract
 import "../access/ScanSecureAccess.sol";
 import "./ScanSecureERC1155.sol";
@@ -61,7 +61,10 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
         emit NewTickets(_event_id, _quantity, msg.sender);
     }
 
-    function buyTicket(uint _event_id, uint _quantity) external payable checkIsBuyer {
+    function buyTicket(
+        uint _event_id,
+        uint _quantity
+    ) external payable checkIsBuyer {
         require(_event_id >= 0 && _event_id <= eventLastId, "Event not exist");
         Event storage e = events[_event_id];
         require(e.totalSold < e.limitTickets, "Sold Out");
@@ -104,7 +107,7 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
 
         for (uint i = 0; i < _quantity; i++) {
             ticketsValidity[_event_id][
-                events[_event_id].totalSold + i + 1
+                events[_event_id].totalSold + (i + 1)
             ] = Ticket(
                 ticketsValidity[_event_id][0].price,
                 msg.sender,
@@ -131,6 +134,10 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
                 TicketStatus.saleable,
             "Ticket consumed"
         );
+        require(
+            ticketsValidity[_event_id][_ticket_id].owner == msg.sender,
+            "You are not owner on ticket"
+        );
 
         ticketsValidity[_event_id][_ticket_id].status = TicketStatus.consumed;
 
@@ -147,7 +154,7 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
         address _addr,
         uint _event_id,
         uint _ticket_id
-    ) external onlyRole(CREATOR_ROLE) {
+    ) external {
         require(
             ticketsValidity[_event_id][_ticket_id].price > 0,
             "Ticket not exist"
@@ -156,6 +163,10 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
         require(
             ScErc1155.balanceOf(msg.sender, _event_id) > 0,
             "You dont have a ticket"
+        );
+        require(
+            ticketsValidity[_event_id][_ticket_id].owner == msg.sender,
+            "You are not owner on ticket"
         );
 
         ScErc1155.safeTransferFrom(

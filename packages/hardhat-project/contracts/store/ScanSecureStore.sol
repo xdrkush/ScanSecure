@@ -42,7 +42,7 @@ abstract contract ScanSecureStore is ScanSecureTicketManager {
     }
 
     function getEvent(uint _event_id) external view returns (Event memory) {
-        require(_event_id > 0 && _event_id < events.length, "Event not exist");
+        require(_event_id >= 0 && _event_id < events.length, "Event not exist");
         return events[_event_id];
     }
 }

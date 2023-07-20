@@ -125,12 +125,15 @@ describe("ScanSecure", function () {
     await tetherToken.connect(addr2).approve(scanSecure.address, calc.total);
     await scanSecure.connect(addr2).buyTicket(1, quantity)
 
+    await tetherToken.allowance(addr3.address, scanSecure.address);
+    await tetherToken.connect(addr3).approve(scanSecure.address, calc.total);
+    await scanSecure.connect(addr3).buyTicket(1, quantity)
+
     const ticket2 = await scanSecure.getTicket(2, 0)
     const calc2 = calcFees(ticket2.price * quantity)
     await tetherToken.allowance(addr2.address, scanSecure.address);
     await tetherToken.connect(addr2).approve(scanSecure.address, calc2.total);
     await scanSecure.connect(addr2).buyTicket(2, quantity)
-
 
     return { ScanSecure, scanSecure, tetherToken, scanSecureERC1155, owner, addr1, addr2, addr3, addr4, ownerUSDT, creator2 };
   };
@@ -148,7 +151,7 @@ describe("ScanSecure", function () {
       it("Should rigth balance with transfert token", async function () {
         const { tetherToken, owner, addr1, addr2, addr3, ownerUSDT } = await loadFixture(deployContextInit);
 
-        expect(await tetherToken.balanceOf(ownerUSDT.address)).to.equal(418740000);
+        expect(String(await tetherToken.balanceOf(ownerUSDT.address))).to.equal("419999999999999999998740000");
         expect(await tetherToken.balanceOf(owner.address)).to.equal(1000000);
         expect(await tetherToken.balanceOf(addr1.address)).to.equal(150000);
         expect(await tetherToken.balanceOf(addr2.address)).to.equal(100000);
@@ -172,17 +175,14 @@ describe("ScanSecure", function () {
           const { scanSecure } = await loadFixture(deployContextInit);
           expect(await scanSecure.getRoleAdmin(ADMIN_DEFAULT_ROLE)).to.equal(ADMIN_ROLE);
         });
-
         it("Should rigth role ADMIN_ROLE for owner", async function () {
           const { scanSecure, owner } = await loadFixture(deployContextInit);
           expect(await scanSecure.hasRole(ADMIN_ROLE, owner.address)).to.equal(true);
         });
-
         it("Should rigth role MEMBER_ROLE for user", async function () {
           const { scanSecure, addr1 } = await loadFixture(deployContextRegistered);
           expect(await scanSecure.hasRole(MEMBER_ROLE, addr1.address)).to.equal(true);
         });
-
         it("Should rigth role CREATOR_ROLE for user", async function () {
           const { scanSecure, addr1, addr2 } = await loadFixture(deployContextAnswerCertification);
           expect(await scanSecure.hasRole(CREATOR_ROLE, addr1.address)).to.equal(true);
@@ -191,10 +191,6 @@ describe("ScanSecure", function () {
       })
 
       describe("Access", function () {
-        // it("Env", async function () {
-        //   const { scanSecure } = await loadFixture(deployContextInit);
-        //   // console.log(await scanSecure.DEFAULT_ADMIN_ROLE())
-        // });
         it("Register with pseudo empty", async function () {
           const { scanSecure, addr1 } = await loadFixture(deployContextInit);
           await expect(scanSecure.connect(addr1).register(""))
@@ -211,6 +207,7 @@ describe("ScanSecure", function () {
             .to.emit(scanSecure, "Whitelisted")
             .withArgs(addr1.address);
         });
+
         it("AskCertification with no member", async function () {
           const { scanSecure, addr1 } = await loadFixture(deployContextInit);
           await expect(scanSecure.connect(addr1).askCertification("toto"))
@@ -228,6 +225,7 @@ describe("ScanSecure", function () {
             .to.emit(scanSecure, "AskCertification")
             .withArgs(addr1.address, message);
         });
+
         it("CertificationAnswer with user not ADMIN_ROLE", async function () {
           const { scanSecure, addr1 } = await loadFixture(deployContextAskCertification);
           await expect(scanSecure.connect(addr1).certificationAnswer(true, addr1.address))
@@ -244,6 +242,7 @@ describe("ScanSecure", function () {
             .to.emit(scanSecure, "Certified")
             .withArgs(addr1.address, 2);
         });
+
         it("getUser", async function () {
           const { scanSecure, addr4 } = await loadFixture(deployContextAskCertification);
           await expect(scanSecure.connect(addr4).getUser(addr4.address))
@@ -270,19 +269,16 @@ describe("ScanSecure", function () {
           expect(author).to.equal(addr1.address);
 
         });
-
         it("CreateEvent : Should rigth error with no CREATOR_ROLE", async function () {
           const { scanSecure, addr2 } = await loadFixture(deployContextAnswerCertification);
           await expect(scanSecure.connect(addr2).createEvent("Test0"))
             .to.be.revertedWith(`AccessControl: account ${addr2.address.toLowerCase()} is missing role ${CREATOR_ROLE}`)
         });
-
         it("CreateEvent : Should rigth error title is empty", async function () {
           const { scanSecure, addr1 } = await loadFixture(deployContextCreateEvent);
           await expect(scanSecure.connect(addr1).createEvent(""))
             .to.be.revertedWith(`Title null is not accepted`)
         });
-
         it("CreateEvent -> Event EventCreated", async function () {
           const { scanSecure, addr1 } = await loadFixture(deployContextAnswerCertification);
 
@@ -310,13 +306,11 @@ describe("ScanSecure", function () {
           expect(eventS.author).to.equal(addr1.address);
           expect(eventS.status).to.equal(2);
         });
-
         it("SetStatusEvent : Should rigth error not creator of event", async function () {
           const { scanSecure, addr2 } = await loadFixture(deployContextCreateEvent);
           await expect(scanSecure.connect(addr2).setStatusEvent(1))
             .to.be.revertedWith(`You are not creator of event`)
         });
-
         it("SetStatusEvent -> Event EventStatusChanged", async function () {
           const { scanSecure, addr1 } = await loadFixture(deployContextCreateEvent);
 
@@ -333,7 +327,6 @@ describe("ScanSecure", function () {
           expect(event.author).to.equal(addr1.address);
           expect(event.status).to.equal(0);
         });
-
         it("GetEvent : Should are error event no exist", async function () {
           const { scanSecure, addr1 } = await loadFixture(deployContextCreateEvent);
 
@@ -442,7 +435,7 @@ describe("ScanSecure", function () {
           // Contract
           expect(await tetherToken.balanceOf(scanSecure.address)).to.equal(250)
           // Owner (deployer contract)
-          expect(await tetherToken.balanceOf(ownerUSDT.address)).to.equal(418740000)
+          expect(String(await tetherToken.balanceOf(ownerUSDT.address))).to.equal("419999999999999999998740000");
 
           // Addr1 (seller)
           expect(await scanSecureERC1155.balanceOf(addr1.address, 1)).to.equal(900)
@@ -499,7 +492,7 @@ describe("ScanSecure", function () {
           // Contract
           expect(await tetherToken.balanceOf(scanSecure.address)).to.equal(1000)
           // Owner (deployer contract)
-          expect(await tetherToken.balanceOf(ownerUSDT.address)).to.equal(418740000)
+          expect(String(await tetherToken.balanceOf(ownerUSDT.address))).to.equal("419999999999999999998740000");
 
           // Addr1 (seller)
           expect(await scanSecureERC1155.balanceOf(addr1.address, 1)).to.equal(0)
@@ -572,8 +565,8 @@ describe("ScanSecure", function () {
 
           await scanSecure.connect(owner).sumRecovery()
 
-          expect(await tetherToken.balanceOf(owner.address)).to.equal(1000025)
-          expect(await tetherToken.balanceOf(ownerUSDT.address)).to.equal(418740000)
+          expect(await tetherToken.balanceOf(owner.address)).to.equal(1000035)
+          expect(String(await tetherToken.balanceOf(ownerUSDT.address))).to.equal("419999999999999999998740000");
           expect(await tetherToken.balanceOf(scanSecure.address)).to.equal(0)
         });
         it("SumRecovery -> Event SumRecovered", async function () {
@@ -613,13 +606,13 @@ describe("ScanSecure", function () {
             .withArgs(1, 2, addr2.address);
         });
         it("ConsumeTicket : Should error ticket not exist", async function () {
-          const { scanSecure, addr2 } = await loadFixture(deployContextBuyTickets);
-          await expect(scanSecure.connect(addr2).consumeTicket(1, 5000))
+          const { scanSecure, addr1 } = await loadFixture(deployContextBuyTickets);
+          await expect(scanSecure.connect(addr1).consumeTicket(1, 5000))
             .to.be.revertedWith(`Ticket not exist`)
         });
         it("ConsumeTicket : Should error you have not ticket", async function () {
-          const { scanSecure, addr3 } = await loadFixture(deployContextBuyTickets);
-          await expect(scanSecure.connect(addr3).consumeTicket(1, 2))
+          const { scanSecure, addr4 } = await loadFixture(deployContextBuyTickets);
+          await expect(scanSecure.connect(addr4).consumeTicket(1, 2))
             .to.be.revertedWith(`You have not ticket`)
         });
         it("ConsumeTicket : Should error you have not ticket", async function () {
@@ -628,12 +621,19 @@ describe("ScanSecure", function () {
           await expect(scanSecure.connect(addr2).consumeTicket(1, 2))
             .to.be.revertedWith(`Ticket consumed`)
         });
+        it("ConsumeTicket : Should error user not owner of ticket", async function () {
+          const { scanSecure, addr2 } = await loadFixture(deployContextBuyTickets);
+          await expect(scanSecure.connect(addr2).consumeTicket(1, 11))
+            .to.be.revertedWith(`You are not owner on ticket`)
+        });
+
 
         it("OfferTicket : Should rigth offer ticket", async function () {
           const { scanSecure, scanSecureERC1155, addr1, addr2, creator2, addr3 } = await loadFixture(deployContextBuyTickets);
 
-          await scanSecure.connect(addr1).offerTicket(creator2.address, 1, 1)
-          await scanSecure.connect(addr1).offerTicket(creator2.address, 1, 1)
+          await scanSecureERC1155.connect(addr2).setApprovalForAll(scanSecure.address, true)
+          await scanSecure.connect(addr2).offerTicket(creator2.address, 1, 1)
+          await scanSecure.connect(addr2).offerTicket(creator2.address, 1, 2)
 
           await scanSecureERC1155.connect(creator2).setApprovalForAll(scanSecure.address, true)
           await scanSecure.connect(creator2).offerTicket(addr3.address, 1, 1)
@@ -643,23 +643,18 @@ describe("ScanSecure", function () {
           expect(ticket.price).to.equal(20)
           expect(ticket.owner).to.equal(addr3.address)
 
-          expect(await scanSecureERC1155.balanceOf(addr1.address, 1)).to.equal(988)
+          expect(await scanSecureERC1155.balanceOf(addr1.address, 1)).to.equal(980)
           expect(await scanSecureERC1155.balanceOf(creator2.address, 1)).to.equal(1)
-          expect(await scanSecureERC1155.balanceOf(addr2.address, 1)).to.equal(10)
-          expect(await scanSecureERC1155.balanceOf(addr3.address, 1)).to.equal(1)
+          expect(await scanSecureERC1155.balanceOf(addr2.address, 1)).to.equal(8)
+          expect(await scanSecureERC1155.balanceOf(addr3.address, 1)).to.equal(11)
 
         });
         it("OfferTicket -> Event TicketOwnered", async function () {
-          const { scanSecure, addr1, creator2 } = await loadFixture(deployContextBuyTickets);
-          await expect(scanSecure.connect(addr1).offerTicket(creator2.address, 1, 1))
+          const { scanSecure, scanSecureERC1155, addr2, creator2 } = await loadFixture(deployContextBuyTickets);
+          await scanSecureERC1155.connect(addr2).setApprovalForAll(scanSecure.address, true)
+          await expect(scanSecure.connect(addr2).offerTicket(creator2.address, 1, 1))
             .to.emit(scanSecure, "TicketOwnered")
             .withArgs(1, 1, creator2.address);
-        });
-        it("OfferTicket : Should error no CREATOR_ROLE", async function () {
-          const { scanSecure, scanSecureERC1155, addr2, addr3 } = await loadFixture(deployContextBuyTickets);
-          await scanSecureERC1155.connect(addr2).setApprovalForAll(scanSecure.address, true)
-          await expect(scanSecure.connect(addr2).offerTicket(addr3.address, 1, 1))
-            .to.be.revertedWith(`AccessControl: account ${addr2.address.toLowerCase()} is missing role ${CREATOR_ROLE}`)
         });
         it("OfferTicket : Should error ticket not exist", async function () {
           const { scanSecure, scanSecureERC1155, addr1, addr3 } = await loadFixture(deployContextBuyTickets);
@@ -672,6 +667,12 @@ describe("ScanSecure", function () {
           await scanSecureERC1155.connect(creator2).setApprovalForAll(scanSecure.address, true)
           await expect(scanSecure.connect(creator2).offerTicket(addr3.address, 1, 1))
             .to.be.revertedWith(`You dont have a ticket`)
+        });
+        it("OfferTicket : Should error user not owner of ticket", async function () {
+          const { scanSecure, scanSecureERC1155, addr3 } = await loadFixture(deployContextBuyTickets);
+          await scanSecureERC1155.connect(addr3).setApprovalForAll(scanSecure.address, true)
+          await expect(scanSecure.connect(addr3).offerTicket(addr3.address, 1, 1))
+            .to.be.revertedWith(`You are not owner on ticket`)
         });
 
       })
@@ -686,6 +687,6 @@ describe("ScanSecure", function () {
         });
       })
     })
-    
+
   });
 });
