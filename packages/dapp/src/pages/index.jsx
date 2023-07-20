@@ -1,6 +1,5 @@
 import MainLayout from "../components/layouts/Main.layout"
 import { Box, Grid } from "@chakra-ui/react"
-import { Register } from "../components/profile/Register"
 
 export default function Home() {
 
