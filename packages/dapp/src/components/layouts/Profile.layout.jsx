@@ -7,7 +7,7 @@ export default function Profile({ children }) {
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     // OpenSidebar for frist load (default)
-    useEffect(() => onOpen(), [])
+    useEffect(() => onOpen(), [onOpen])
 
     return (
         <Grid

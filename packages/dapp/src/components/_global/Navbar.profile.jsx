@@ -3,7 +3,6 @@ import {
     useColorModeValue,
     Breadcrumb,
     BreadcrumbItem,
-    Divider,
     Spacer,
 } from "@chakra-ui/react"
 import Link from 'next/link'
@@ -11,20 +10,25 @@ import { ColorModeSwitcher } from "../ColorSwitcher"
 import ButtonProfile from "./ButtonProfile";
 
 export function Navbar({ isOpen }) {
+    const color1 = useColorModeValue("white", "gray.800")
+    const color2 = useColorModeValue("gray.800", "white")
+    const color3 = useColorModeValue("gray.600", "white")
+    const color4 = useColorModeValue("gray.100", "primary.100")
+    
     return (
         <Box>
             <Flex
                 w={isOpen ? "calc(100% - 230px)" : "calc(100% - 60px)"}
                 position="fixed"
                 zIndex="10"
-                bg={useColorModeValue("white", "gray.800")}
-                color={useColorModeValue("gray.600", "white")}
+                bg={color1}
+                color={color3}
                 minH={"60px"}
                 py={{ base: 2 }}
                 px={{ base: 4 }}
                 borderBottom={1}
                 borderStyle={"solid"}
-                borderColor={useColorModeValue("gray.100", "primary.100")}
+                borderColor={color4}
                 align={"center"}
                 justify={"space-between"}
             >
@@ -33,11 +37,11 @@ export function Navbar({ isOpen }) {
                     <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
                         <Box
                             display="flex"
-                            color={useColorModeValue("gray.800", "white")}
+                            color={color2}
                             fontSize={"lg"}
                             _hover={{
                                 textDecoration: "none",
-                                color: useColorModeValue("gray.800", "white"),
+                                color: color2,
                             }}
                             fontWeight="bold"
                         >

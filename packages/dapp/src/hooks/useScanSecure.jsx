@@ -118,7 +118,7 @@ export function useScanSecure() {
             setIsAdmin(false)
             setNotif({ type: "error", message: String(error) })
         }
-    }, [address, scanSecureSC, setNotif])
+    }, [address, setNotif])
 
     const checkUser = useCallback(async () => {
         console.log('checkUser')
@@ -130,14 +130,14 @@ export function useScanSecure() {
         } catch (error) {
             setNotif({ type: "error", message: String(error) })
         }
-    }, [address, scanSecureSC])
+    }, [address, getUser, setNotif])
 
     useEffect(() => {
         if (!address || !scanSecureSC || !contractIsConnected) return;
         checkRoles()
         if (!isWhitelisted || !isCreator || !isAdmin) return;
         checkUser()
-    }, [address, scanSecureSC, scanSecure1155SC, tetherSC, contractIsConnected])
+    }, [address, scanSecureSC, scanSecure1155SC, checkRoles, checkUser, tetherSC, contractIsConnected, isAdmin, isCreator, isWhitelisted])
 
     /*
      * Utils
@@ -516,7 +516,7 @@ export function useScanSecure() {
         });
 
         const ar = (await Promise.all(logs.map(async (log, i) => {
-            return { id: Number(i + 1), eventId: String(log.args.event_id), oldStatus: String(log.args.oldStatus), newStatus: String(log.args.newStatus)};
+            return { id: Number(i + 1), eventId: String(log.args.event_id), oldStatus: String(log.args.oldStatus), newStatus: String(log.args.newStatus) };
         }))).map(w => w)
 
         console.log('log eventStatusChanged', ar)
@@ -535,7 +535,7 @@ export function useScanSecure() {
         });
 
         const arr = (await Promise.all(logs.map(async (log, i) => {
-            return { id: Number(i + 1), eventId: String(log.args.event_id), quantity: String(log.args.quantity), author: String(log.args.author)};
+            return { id: Number(i + 1), eventId: String(log.args.event_id), quantity: String(log.args.quantity), author: String(log.args.author) };
         }))).map(w => w)
 
         console.log('log newTickets', arr)
@@ -554,7 +554,7 @@ export function useScanSecure() {
         });
 
         const arr = (await Promise.all(logs.map(async (log, i) => {
-            return { id: Number(i + 1), eventId: String(log.args.event_id), quantity: String(log.args.quantity), buyer: String(log.args.buyer)};
+            return { id: Number(i + 1), eventId: String(log.args.event_id), quantity: String(log.args.quantity), buyer: String(log.args.buyer) };
         }))).map(w => w)
 
         console.log('log ticketOwnered', arr)
@@ -573,7 +573,7 @@ export function useScanSecure() {
         });
 
         const arr = (await Promise.all(logs.map(async (log, i) => {
-            return { id: Number(i + 1), eventId: String(log.args.event_id), ticketId: String(log.args.ticket_id), consumer: Number(log.args.consumer)};
+            return { id: Number(i + 1), eventId: String(log.args.event_id), ticketId: String(log.args.ticket_id), consumer: Number(log.args.consumer) };
         }))).map(w => w)
 
         console.log('log ticket consumed', arr)
@@ -592,7 +592,7 @@ export function useScanSecure() {
         });
 
         const arr = (await Promise.all(logs.map(async (log, i) => {
-            return { id: Number(i + 1), sum: String(log.args.sum), collector: String(log.args.collector)};
+            return { id: Number(i + 1), sum: String(log.args.sum), collector: String(log.args.collector) };
         }))).map(w => w)
 
         console.log('log recoverysum', arr)

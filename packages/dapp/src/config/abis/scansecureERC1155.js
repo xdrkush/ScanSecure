@@ -1,4 +1,6 @@
-const address = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+// sepolia: 0x190a4a778f45c2e8Ce0146a6000A6f113FE43Ae4
+// local: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
+const address = "0x190a4a778f45c2e8Ce0146a6000A6f113FE43Ae4"
 
 const abi = [
   {
@@ -362,4 +364,5 @@ const abi = [
   }
 ]
 
-export default { address, abi }
+const ABI = { address, abi }
+export default ABI
