@@ -11,6 +11,8 @@
   ],
   "scripts": {
     "blockchain": "npm run blk --workspace=hardhat-project",
+    "script:dev": "npm run dev --workspace=script",
+    "script:start": "npm run start --workspace=script",
     "dapp:dev": "npm run dev --workspace=dapp",
     "dapp:start": "npm run start --workspace=dapp",
     "dapp:build": "npm run build --workspace=dapp",
