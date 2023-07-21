@@ -22,7 +22,7 @@ export const { chains, publicClient } = configureChains(
     [mainnet, sepolia, polygon, polygonMumbai, hardhat],
     [
         publicProvider(),
-        infuraProvider({ apiKey: `${process.env.NEXT_PUBLIC_INFURA_PROJECT_ID}` })
+        // infuraProvider({ apiKey: `${process.env.NEXT_PUBLIC_INFURA_PROJECT_ID}` })
     ]
 );
 const { wallets } = getDefaultWallets({
@@ -60,7 +60,7 @@ export const wagmiConfig = createConfig({
  * Client viem
  */
 
-let chain
+export let chain
 const loadChain = () => {
     switch (process.env.NEXT_PUBLIC_CLIENT_CHAIN) {
         case "mainnet":

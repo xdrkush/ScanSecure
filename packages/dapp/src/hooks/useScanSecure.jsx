@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 
 import { getWalletClient, getContract, prepareWriteContract, writeContract, readContract, waitForTransaction } from '@wagmi/core'
 import { useAccount, useContractEvent, useNetwork } from "wagmi"
-import { parseAbiItem, getAddress, parseEther } from 'viem'
+import { parseAbiItem, getAddress, parseEther, parseUnits, formatEther, formatUnits } from 'viem'
 
 import { useNotif } from './useNotif';
 import { config, client } from "../config"
@@ -65,7 +65,7 @@ export function useScanSecure() {
             setNotif({ type: "error", message: "Impossible de se connecter au contrat, êtes vous sur le bon réseaux ?" })
             setContractIsConnected(false)
         }
-    }, [setNotif])
+    }, [])
 
     useEffect(() => {
         if (!isConnected) return;
@@ -74,7 +74,7 @@ export function useScanSecure() {
         } catch (error) {
             console.log(error)
         }
-    }, [isConnected, address, chain?.id, loadContract])
+    }, [isConnected, address, chain?.id])
 
     // Roles
     const checkRoles = useCallback(async () => {
@@ -118,7 +118,7 @@ export function useScanSecure() {
             setIsAdmin(false)
             setNotif({ type: "error", message: String(error) })
         }
-    }, [address, setNotif])
+    }, [address])
 
     const checkUser = useCallback(async () => {
         console.log('checkUser')
@@ -130,14 +130,14 @@ export function useScanSecure() {
         } catch (error) {
             setNotif({ type: "error", message: String(error) })
         }
-    }, [address, setNotif])
+    }, [address])
 
     useEffect(() => {
         if (!address || !scanSecureSC || !contractIsConnected) return;
         checkRoles()
         if (!isWhitelisted || !isCreator || !isAdmin) return;
         checkUser()
-    }, [address, scanSecureSC, scanSecure1155SC, checkRoles, checkUser, tetherSC, contractIsConnected, isAdmin, isCreator, isWhitelisted])
+    }, [address])
 
     /*
      * Utils
@@ -168,10 +168,11 @@ export function useScanSecure() {
     }
     const calcFees = (_price) => {
         const fee = _price * BigInt(5) / BigInt(100);
-        console.log('calcFees', typeof _price, _price, fee)
+        const total = BigInt(_price + fee) * BigInt(10**18)
+        
         return {
             price: _price, fee,
-            total: parseEther((_price + fee).toString()),
+            total: parseEther(total.toString()),
         }
     }
     const approveTether = async (_total) => {
@@ -233,7 +234,6 @@ export function useScanSecure() {
 
         }
     }
-
     const answerCertification = async (_bool, _address) => {
         try {
             const { request } = await prepareWriteContract({
@@ -247,7 +247,6 @@ export function useScanSecure() {
             setNotif({ type: "error", message: String(error) })
         }
     }
-
     const createEvent = async (_title) => {
         try {
             const { request } = await prepareWriteContract({
@@ -291,7 +290,7 @@ export function useScanSecure() {
     const buyTicket = async (_event_id, _quantity) => {
         try {
             const { price } = await getTicket(_event_id, 0)
-
+            // console.log("price", price, calcFees(price * BigInt(_quantity)).total)
             await approveTether(calcFees(price * BigInt(_quantity)).total)
 
             const { request } = await prepareWriteContract({
@@ -628,6 +627,10 @@ export function useScanSecure() {
         // Tickets
         createTickets, buyTicket, offerTicket, consumeTicket,
         // Getters
-        getUser, getEvent, getTicket
+        getUser, getEvent, getTicket,
+        // Data
+        profile,whitelist,askCertificationLogs,certifiedLogs,
+        eventCreatedLogs,eventStatusChangedLogs,newTicketsLogs,
+        ticketOwneredLogs,ticketConsumedLogs,sumRecoveredLogs,
     }
 }

@@ -79,13 +79,13 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
         uint totalFees = LibFees.calcFees(totalPrice);
         uint totalCost = totalPrice + totalFees;
 
-        require(usdtToken.balanceOf(msg.sender) >= totalCost, "Not fund");
-
         address seller = events[_event_id].author;
         require(
             ScErc1155.isApprovedForAll(seller, address(this)),
             "Contract not approved to spend ticket"
         );
+
+        require(usdtToken.balanceOf(msg.sender) >= totalCost, "Not fund");
 
         // Paid fees for contract
         usdtToken.transferFrom(msg.sender, address(this), totalFees);

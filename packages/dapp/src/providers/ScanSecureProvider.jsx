@@ -10,7 +10,10 @@ export default function ScanSecureProvider({ children }) {
         register, askCertification, answerCertification, sumRecovery,
         createEvent, setStatusEvent,
         createTickets, buyTicket, offerTicket, consumeTicket,
-        getUser, getEvent, getTicket
+        getUser, getEvent, getTicket,
+        profile,whitelist,askCertificationLogs,certifiedLogs,
+        eventCreatedLogs,eventStatusChangedLogs,newTicketsLogs,
+        ticketOwneredLogs,ticketConsumedLogs,sumRecoveredLogs
     } = useScanSecure()
 
     // Memory
@@ -20,14 +23,20 @@ export default function ScanSecureProvider({ children }) {
         register, askCertification, answerCertification, sumRecovery,
         createEvent, setStatusEvent,
         createTickets, buyTicket, offerTicket, consumeTicket,
-        getUser, getEvent, getTicket
+        getUser, getEvent, getTicket,
+        profile,whitelist,askCertificationLogs,certifiedLogs,
+        eventCreatedLogs,eventStatusChangedLogs,newTicketsLogs,
+        ticketOwneredLogs,ticketConsumedLogs,sumRecoveredLogs
     }), [
         scanSecureSC, scanSecure1155SC, tetherSC,
         isWhitelisted, isCreator, isAdmin,
         register, askCertification, answerCertification, sumRecovery,
         createEvent, setStatusEvent,
         createTickets, buyTicket, offerTicket, consumeTicket,
-        getUser, getEvent, getTicket
+        getUser, getEvent, getTicket,
+        profile,whitelist,askCertificationLogs,certifiedLogs,
+        eventCreatedLogs,eventStatusChangedLogs,newTicketsLogs,
+        ticketOwneredLogs,ticketConsumedLogs,sumRecoveredLogs
     ])
 
     return <ScanSecureContext.Provider value={values}>{children}</ScanSecureContext.Provider>;

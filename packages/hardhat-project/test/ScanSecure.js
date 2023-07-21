@@ -10,9 +10,13 @@ const ADMIN_ROLE = "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693
 describe("ScanSecure", function () {
   const calcFees = (_price) => {
     const fee = _price * 5 / 100;
+    console.log()
+    // const fee = _price * BigInt(5) / BigInt(100);
+    const total = BigInt(_price + fee) * BigInt(10**18)
+
     return {
       price: _price, fee,
-      total: ethers.utils.parseEther((_price + fee).toString()),
+      total: ethers.utils.parseEther(total.toString()),
     }
   }
 
