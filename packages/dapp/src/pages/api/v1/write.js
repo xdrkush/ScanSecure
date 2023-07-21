@@ -4,7 +4,6 @@ import { config, chain } from "../../../config/index.js";
 
 const url = process.env.NEXT_PUBLIC_CLIENT_CHAIN === "hardhat" ? `http://localhost:8545` : `https://sepolia.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_PROJECT_ID}`
 
-console.log(process.env.NEXT_PUBLIC_ETH_PRIVATE_KEY)
 const account = privateKeyToAccount(`0x${process.env.NEXT_PUBLIC_ETH_PRIVATE_KEY}`)
 const client = createWalletClient({
     account,
