@@ -10,7 +10,7 @@ export const CreateEvent = () => {
     const checkTitle = () => title.length > 0
 
     return (
-        <>
+        <Box p={5} border='1px' borderColor='gray.200' borderRadius="25">
             <Box px="2">
                 <InputGroup w="100%">
                     <FormControl id="Message">
@@ -31,6 +31,6 @@ export const CreateEvent = () => {
                     Create Event
                 </Button>
             </Box>
-        </>
+        </Box>
     )
 }

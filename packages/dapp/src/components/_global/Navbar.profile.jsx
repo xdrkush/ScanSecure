@@ -10,11 +10,9 @@ import { ColorModeSwitcher } from "../ColorSwitcher"
 import ButtonProfile from "./ButtonProfile";
 
 export function Navbar({ isOpen }) {
-    const color1 = useColorModeValue("white", "gray.800")
-    const color2 = useColorModeValue("gray.800", "white")
-    const color3 = useColorModeValue("gray.600", "white")
-    const color4 = useColorModeValue("gray.100", "primary.100")
-    
+    const color1 = useColorModeValue("primary.500", "primary.900")
+    const color4 = useColorModeValue("accent.500", "accent.500")
+
     return (
         <Box>
             <Flex
@@ -22,7 +20,7 @@ export function Navbar({ isOpen }) {
                 position="fixed"
                 zIndex="10"
                 bg={color1}
-                color={color3}
+                color={"white"}
                 minH={"60px"}
                 py={{ base: 2 }}
                 px={{ base: 4 }}
@@ -35,20 +33,16 @@ export function Navbar({ isOpen }) {
                 {/* HOME LINK */}
                 {!isOpen && (
                     <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-                        <Box
-                            display="flex"
-                            color={color2}
-                            fontSize={"lg"}
-                            _hover={{
-                                textDecoration: "none",
-                                color: color2,
-                            }}
-                            fontWeight="bold"
-                        >
-                            <Link href="/">
-                                ScanSecure
-                            </Link>
-                        </Box>
+                        <Link href="/">
+                            <Box
+                                display="flex"
+                                color={"secondary.100"}
+                                fontSize={"lg"}
+                                fontWeight="bold"
+                            >
+                                0xScanSecure
+                            </Box>
+                        </Link>
                     </Flex>
                 )}
 
@@ -58,12 +52,6 @@ export function Navbar({ isOpen }) {
                     <BreadcrumbItem>
                         <Link href="/events">
                             Events
-                        </Link>
-                    </BreadcrumbItem>
-
-                    <BreadcrumbItem>
-                        <Link href="/tickets">
-                            Tickets
                         </Link>
                     </BreadcrumbItem>
 

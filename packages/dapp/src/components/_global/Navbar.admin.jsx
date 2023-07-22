@@ -16,7 +16,7 @@ export function Navbar({ isOpen }) {
                 w={"100%"}
                 position="fixed"
                 zIndex="10"
-                bg={useColorModeValue("white", "gray.800")}
+                bg={useColorModeValue("white", "primary.800")}
                 color={useColorModeValue("gray.600", "white")}
                 minH={"60px"}
                 py={{ base: 2 }}
@@ -57,27 +57,6 @@ export function Navbar({ isOpen }) {
                         Admin
                     </Box>
                 </Flex>
-
-                <Breadcrumb separator='-'>
-                    <BreadcrumbItem>
-                        <Link href="/events">
-                            Events
-                        </Link>
-                    </BreadcrumbItem>
-
-                    <BreadcrumbItem>
-                        <Link href="/tickets">
-                            Tickets
-                        </Link>
-                    </BreadcrumbItem>
-
-                    <BreadcrumbItem isCurrentPage>
-
-                        <Link href="/contact">
-                            Contact
-                        </Link>
-                    </BreadcrumbItem>
-                </Breadcrumb>
 
                 {/* COLOR MODE */}
                 <Box px={1}>

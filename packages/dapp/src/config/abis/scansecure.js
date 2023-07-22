@@ -1,6 +1,6 @@
-// sepolia: 0x85B5E9C3398f6F179A0A8B36bE7dA972366125B7
+// sepolia: 0x68231F68F245dCaB95FEAdf525d742067640DFA0
 // local: 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
-const address = "0x85B5E9C3398f6F179A0A8B36bE7dA972366125B7"
+const address = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
 
 const abi = [
     {
@@ -39,7 +39,7 @@ const abi = [
         "anonymous": false,
         "inputs": [
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "address",
                 "name": "addr",
                 "type": "address"
@@ -58,13 +58,13 @@ const abi = [
         "anonymous": false,
         "inputs": [
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "address",
                 "name": "addr",
                 "type": "address"
             },
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "enum ScanSecureLibStorage.CertificationStatus",
                 "name": "newStatus",
                 "type": "uint8"
@@ -77,13 +77,13 @@ const abi = [
         "anonymous": false,
         "inputs": [
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "uint256",
                 "name": "event_id",
                 "type": "uint256"
             },
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "address",
                 "name": "author",
                 "type": "address"
@@ -96,7 +96,7 @@ const abi = [
         "anonymous": false,
         "inputs": [
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "uint256",
                 "name": "event_id",
                 "type": "uint256"
@@ -121,19 +121,19 @@ const abi = [
         "anonymous": false,
         "inputs": [
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "uint256",
                 "name": "event_id",
                 "type": "uint256"
             },
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "uint256",
                 "name": "quantity",
                 "type": "uint256"
             },
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "address",
                 "name": "author",
                 "type": "address"
@@ -227,7 +227,7 @@ const abi = [
                 "type": "uint256"
             },
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "address",
                 "name": "collector",
                 "type": "address"
@@ -240,19 +240,19 @@ const abi = [
         "anonymous": false,
         "inputs": [
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "uint256",
                 "name": "event_id",
                 "type": "uint256"
             },
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "uint256",
                 "name": "ticket_id",
                 "type": "uint256"
             },
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "address",
                 "name": "consumer",
                 "type": "address"
@@ -265,19 +265,19 @@ const abi = [
         "anonymous": false,
         "inputs": [
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "uint256",
                 "name": "event_id",
                 "type": "uint256"
             },
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "uint256",
                 "name": "quantity",
                 "type": "uint256"
             },
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "address",
                 "name": "buyer",
                 "type": "address"
@@ -290,7 +290,7 @@ const abi = [
         "anonymous": false,
         "inputs": [
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "address",
                 "name": "addr",
                 "type": "address"
@@ -417,6 +417,19 @@ const abi = [
         "name": "createTickets",
         "outputs": [],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "eventLastId",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -704,6 +717,19 @@ const abi = [
                 "internalType": "bool",
                 "name": "",
                 "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "totalMembers",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
             }
         ],
         "stateMutability": "view",

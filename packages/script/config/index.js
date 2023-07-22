@@ -13,7 +13,7 @@ dotenv.config()
 
 export let chain
 const loadChain = () => {
-    switch (process.env.NEXT_PUBLIC_CLIENT_CHAIN) {
+    switch (process.env.CLIENT_CHAIN) {
         case "mainnet":
             chain = mainnet
             break;
@@ -32,8 +32,15 @@ const loadChain = () => {
 loadChain()
 
 // Client viem
-const url = process.env.NEXT_PUBLIC_CLIENT_CHAIN === "hardhat" ? `http://localhost:8545` : `https://sepolia.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_PROJECT_ID}`
-export const account = privateKeyToAccount(`0x${process.env.NEXT_PUBLIC_ETH_PRIVATE_KEY}`)
+const url = process.env.CLIENT_CHAIN === "hardhat" ? `http://localhost:8545` : `https://sepolia.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+console.log("url", url)
+export const [account, owner, second, third, fourth] = [
+    privateKeyToAccount(`0x${process.env.ETH_PRIVATE_KEY}`),
+    privateKeyToAccount(`0x${process.env.OWNER}`),
+    privateKeyToAccount(`0x${process.env.SECOND}`),
+    privateKeyToAccount(`0x${process.env.THIRD}`),
+    privateKeyToAccount(`0x${process.env.FOURTH}`),
+]
 
 export const client = createWalletClient({
     chain: chain,
@@ -42,7 +49,7 @@ export const client = createWalletClient({
 }).extend(publicActions)
 
 export const config = {
-    chain: process.env.NEXT_PUBLIC_CLIENT_CHAIN,
+    chain: process.env.CLIENT_CHAIN,
     contracts: {
         scanSecure: {
             address: scansecure.address, abi: scansecure.abi

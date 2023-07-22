@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider, extendBaseTheme } from '@chakra-ui/react'
 import { WagmiConfig } from 'wagmi';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { chains, wagmiConfig } from '../config';
@@ -15,7 +15,7 @@ export default function App({ Component, pageProps }) {
     useEffect(() => setMounted(true), [])
 
     return (
-        <ChakraProvider theme={theme}>
+        <ChakraProvider theme={extendBaseTheme(theme)}>
             {mounted && (
                 <WagmiConfig config={wagmiConfig}>
                     <RainbowKitProvider chains={chains}>

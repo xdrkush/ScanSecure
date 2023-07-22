@@ -19,19 +19,19 @@ contract ScanSecureLibStorage {
         TicketStatus status;
     }
 
-    event Whitelisted(address addr);
-    event AskCertification(address addr, string message);
-    event Certified(address addr, CertificationStatus newStatus);
-    event EventCreated(uint event_id, address author);
+    event Whitelisted(address indexed addr);
+    event AskCertification(address indexed addr, string message);
+    event Certified(address indexed addr, CertificationStatus indexed newStatus);
+    event EventCreated(uint indexed event_id, address indexed author);
     event EventStatusChanged(
-        uint event_id,
+        uint indexed event_id,
         EventStatus oldStatus,
         EventStatus newStatus
     );
-    event NewTickets(uint event_id, uint quantity, address author);
-    event TicketOwnered(uint event_id, uint quantity, address buyer);
-    event TicketConsumed(uint event_id, uint ticket_id, address consumer);
-    event SumRecovered(uint sum, address collector);
+    event NewTickets(uint indexed event_id, uint indexed quantity, address indexed author);
+    event TicketOwnered(uint indexed event_id, uint indexed quantity, address indexed buyer);
+    event TicketConsumed(uint indexed event_id, uint indexed ticket_id, address indexed consumer);
+    event SumRecovered(uint sum, address indexed collector);
 
     enum EventStatus {
         created,

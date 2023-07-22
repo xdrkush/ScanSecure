@@ -1,7 +1,17 @@
+import { useRouter } from 'next/router'
+import { useContext, useEffect } from "react"
 import { Navbar } from "../_global/Navbar.main"
 import { Grid, GridItem, Container } from "@chakra-ui/react"
+import { ScanSecureContext } from "../../contexts"
 
 export default function Admin({ children }) {
+    const router = useRouter()
+    const { isAdmin } = useContext(ScanSecureContext)
+
+    useEffect(() => {
+        if (!isAdmin) router.push('/')
+    }, [isAdmin, router])
+
     return (
         <Grid
             templateAreas={`"nav" "main"`}

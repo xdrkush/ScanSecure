@@ -2,11 +2,13 @@ import { useState, useEffect, useCallback } from 'react';
 
 import { getWalletClient, getContract, prepareWriteContract, writeContract, readContract, waitForTransaction } from '@wagmi/core'
 import { useAccount, useContractEvent, useNetwork } from "wagmi"
-import { parseAbiItem, getAddress, parseEther, parseUnits, formatEther, formatUnits } from 'viem'
+import { parseAbiItem, getAddress, parseEther } from 'viem'
 
 import { useNotif } from './useNotif';
 import { config, client } from "../config"
 import { confetti, MEMBER_ROLE, CREATOR_ROLE, ADMIN_ROLE } from '../utils';
+
+const initContract = process.env.NEXT_PUBLIC_CLIENT_CHAIN === "HARDHAT" ? 0n : 3931113n
 
 export function useScanSecure() {
     const { isConnected, address } = useAccount()
@@ -18,6 +20,8 @@ export function useScanSecure() {
     const [scanSecure1155SC, setScanSecure1155SC] = useState();
     const [tetherSC, setTetherSC] = useState();
     const [contractIsConnected, setContractIsConnected] = useState();
+    const [eventLastId, setEventLastId] = useState();
+    const [totalMembers, setTotalMembers] = useState();
     const [profile, setProfile] = useState()
     const [whitelist, setWhitelist] = useState()
     const [askCertificationLogs, setAskCertificationLogs] = useState()
@@ -137,7 +141,7 @@ export function useScanSecure() {
         checkRoles()
         if (!isWhitelisted || !isCreator || !isAdmin) return;
         checkUser()
-    }, [address])
+    }, [address, scanSecureSC, contractIsConnected])
 
     /*
      * Utils
@@ -168,8 +172,8 @@ export function useScanSecure() {
     }
     const calcFees = (_price) => {
         const fee = _price * BigInt(5) / BigInt(100);
-        const total = BigInt(_price + fee) * BigInt(10**18)
-        
+        const total = BigInt(_price + fee)
+
         return {
             price: _price, fee,
             total: parseEther(total.toString()),
@@ -288,9 +292,10 @@ export function useScanSecure() {
         }
     }
     const buyTicket = async (_event_id, _quantity) => {
+        console.log("price",_event_id, typeof price, typeof _quantity)
         try {
             const { price } = await getTicket(_event_id, 0)
-            // console.log("price", price, calcFees(price * BigInt(_quantity)).total)
+            console.log("price", price, calcFees(price * BigInt(_quantity)).total)
             await approveTether(calcFees(price * BigInt(_quantity)).total)
 
             const { request } = await prepareWriteContract({
@@ -383,7 +388,7 @@ export function useScanSecure() {
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'getEvent',
-                args: [Number(_event_id)]
+                args: [_event_id]
             })
             return data
         } catch (error) {
@@ -403,56 +408,102 @@ export function useScanSecure() {
             setNotif({ type: "error", message: String(error) })
         }
     }
+    const getEventLastId = async () => {
+        try {
+            const data = await readContract({
+                address: config.contracts.scanSecure.address,
+                abi: config.contracts.scanSecure.abi,
+                functionName: 'eventLastId',
+            })
+            
+            console.log('getEventLastId', data)
+            setEventLastId(Number(data))
+        } catch (error) {
+            setNotif({ type: "error", message: String(error) })
+        }
+    }
+    const getTotalMembers = async () => {
+        try {
+            const data = await readContract({
+                address: config.contracts.scanSecure.address,
+                abi: config.contracts.scanSecure.abi,
+                functionName: 'totalMembers',
+            })
+            
+            console.log('getTotalMembers', data)
+            setEventLastId(Number(data))
+        } catch (error) {
+            setNotif({ type: "error", message: String(error) })
+        }
+    }
 
     /*
      * Watcher
      * ************** */
-    // useContractEvent({
-    //     address: getAddress(config.contracts.scanSecure.address),
-    //     abi: config.contracts.scanSecure.abi,
-    //     eventName: 'Whitelisted',
-    //     listener(log) {
-    //         console.log('event1', address, String(log[0].args.addr))
-    //         console.log('event1', whitelist, String(address) === String(log[0].args.addr))
-    //         if (String(address) === String(log[0].args.addr)) {
-    //             setNotif({ type: 'info', message: 'Vous êtes Whitelisted' })
-    //             checkRoles()
-    //         }
-    //         setNotif({ type: 'info', message: String(log[0].args.addr) })
-    //         if (!whitelist) return;
-    //         setWhitelist([...whitelist, { id: whitelist.length, address: String(log[0].args.addr) }])
-    //     }
-    // })
+    useContractEvent({
+        address: getAddress(config.contracts.scanSecure.address),
+        abi: config.contracts.scanSecure.abi,
+        eventName: 'Whitelisted',
+        listener(log) {
+            console.log('wevent1', address, String(log[0].args.addr))
+            console.log('wevent2', whitelist, String(address) === String(log[0].args.addr))
+            if (String(address) === String(log[0].args.addr)) {
+                setNotif({ type: 'info', message: 'Vous êtes Whitelisted' })
+                checkRoles()
+            }
+            setNotif({ type: 'info', message: String(log[0].args.addr) })
+            if (!whitelist) return;
+            setWhitelist([...whitelist, { id: whitelist.length, address: String(log[0].args.addr) }])
+        }
+    })
 
     /*
      * Event logs
      * ************** */
+    // const loadMoreWhitelisted = async () => {
+    //     const lastBlock = BigInt(Number(await client.getBlockNumber()) - 5000)
+    //     const page = lastBlock % initContract
+
+    //     const filter = await client.createEventFilter({
+    //         address: getAddress(config.contracts.scanSecure.address),
+    //         event: parseAbiItem(
+    //             "event Whitelisted(address indexed addr)"
+    //         ),
+    //         fromBlock: 0n,
+    //         toBlock: 'latest'
+    //     })
+
+    //     const logs = await client.getFilterLogs({ filter })
+    //     console.log('more event', logs)
+    // }
+
     const getWhitelisted = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 15000)
+        console.log(scanSecureSC)
+        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
         const logs = await client.getLogs({
             address: getAddress(config.contracts.scanSecure.address),
             event: parseAbiItem(
-                "event Whitelisted(address addr)"
+                "event Whitelisted(address indexed addr)"
             ),
             fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
         });
+        console.log('log1', logs)
 
         const arr = (await Promise.all(logs.map(async (log, i) => {
             return { id: Number(i + 1), address: String(log.args.addr) };
         }))).map(w => w)
 
-        console.log('log whitelist', arr)
-
         setWhitelist(arr)
+
     }
     const getAskCertification = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 15000)
+        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
         const logs = await client.getLogs({
             address: getAddress(config.contracts.scanSecure.address),
             event: parseAbiItem(
-                "event AskCertification(address addr, string message)"
+                "event AskCertification(address indexed addr, string message)"
             ),
             fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
         });
@@ -466,12 +517,12 @@ export function useScanSecure() {
         setAskCertificationLogs(arr)
     }
     const getCertified = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 15000)
+        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
         const logs = await client.getLogs({
             address: getAddress(config.contracts.scanSecure.address),
             event: parseAbiItem(
-                "event Certified(address addr, uint8 newStatus)"
+                "event Certified(address indexed addr, uint indexed newStatus)"
             ),
             fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
         });
@@ -485,12 +536,12 @@ export function useScanSecure() {
         setCertifiedLogs(arr)
     }
     const getEventCreated = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 15000)
+        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
         const logs = await client.getLogs({
             address: getAddress(config.contracts.scanSecure.address),
             event: parseAbiItem(
-                "event EventCreated(uint event_id, address author)"
+                "event EventCreated(uint indexed event_id, address indexed author)"
             ),
             fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
         });
@@ -504,12 +555,12 @@ export function useScanSecure() {
         setEventCreatedLogs(arr)
     }
     const getEventStatusChanged = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 15000)
+        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
         const logs = await client.getLogs({
             address: getAddress(config.contracts.scanSecure.address),
             event: parseAbiItem(
-                "event EventStatusChanged(uint event_id, uint8 oldStatus, uint8 newStatus)"
+                "event EventStatusChanged(uint indexed event_id, uint8 oldStatus, uint8 newStatus)"
             ),
             fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
         });
@@ -523,12 +574,12 @@ export function useScanSecure() {
         setEventStatusChangedLogs(ar)
     }
     const getNewTickets = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 15000)
+        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
         const logs = await client.getLogs({
             address: getAddress(config.contracts.scanSecure.address),
             event: parseAbiItem(
-                "event NewTickets(uint event_id, uint quantity, address author)"
+                "event NewTickets(uint indexed event_id, uint indexed quantity, address indexed author)"
             ),
             fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
         });
@@ -542,12 +593,12 @@ export function useScanSecure() {
         setNewTicketsLogs(arr)
     }
     const getTicketOwnered = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 15000)
+        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
         const logs = await client.getLogs({
             address: getAddress(config.contracts.scanSecure.address),
             event: parseAbiItem(
-                "event TicketOwnered(uint event_id, uint quantity, address buyer)"
+                "event TicketOwnered(uint indexed event_id, uint indexed quantity, address indexed buyer)"
             ),
             fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
         });
@@ -561,12 +612,12 @@ export function useScanSecure() {
         setTicketOwneredLogs(arr)
     }
     const getTicketConsumed = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 15000)
+        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
         const logs = await client.getLogs({
             address: getAddress(config.contracts.scanSecure.address),
             event: parseAbiItem(
-                "event TicketConsumed(uint event_id, uint ticket_id, address consumer)"
+                "event TicketConsumed(uint indexed event_id, uint indexed ticket_id, address indexed consumer)"
             ),
             fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
         });
@@ -580,12 +631,12 @@ export function useScanSecure() {
         setTicketConsumedLogs(arr)
     }
     const getRecoverySum = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 15000)
+        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
         const logs = await client.getLogs({
             address: getAddress(config.contracts.scanSecure.address),
             event: parseAbiItem(
-                "event SumRecovered(uint sum, address collector)"
+                "event SumRecovered(uint sum, address indexed collector)"
             ),
             fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
         });
@@ -599,10 +650,8 @@ export function useScanSecure() {
         setSumRecoveredLogs(arr)
     }
 
-    // const [ticketConsumedLogs, setTicketConsumedLogs] = useState()
-    // const [sumRecoveredLogs, setSumRecoveredLogs] = useState()
     useEffect(() => {
-        if (!contractIsConnected) return;
+        if (!contractIsConnected || !scanSecureSC) return;
         getWhitelisted()
         getAskCertification()
         getCertified()
@@ -612,6 +661,9 @@ export function useScanSecure() {
         getTicketOwnered()
         getTicketConsumed()
         getRecoverySum()
+        getEventLastId()
+        getTotalMembers()
+        // loadMoreWhitelisted()
     }, [scanSecureSC, contractIsConnected])
 
     // export from hook
@@ -629,8 +681,9 @@ export function useScanSecure() {
         // Getters
         getUser, getEvent, getTicket,
         // Data
-        profile,whitelist,askCertificationLogs,certifiedLogs,
-        eventCreatedLogs,eventStatusChangedLogs,newTicketsLogs,
-        ticketOwneredLogs,ticketConsumedLogs,sumRecoveredLogs,
+        eventLastId, totalMembers,
+        profile, whitelist, askCertificationLogs, certifiedLogs,
+        eventCreatedLogs, eventStatusChangedLogs, newTicketsLogs,
+        ticketOwneredLogs, ticketConsumedLogs, sumRecoveredLogs,
     }
 }

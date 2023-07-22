@@ -1,13 +1,21 @@
-import { useEffect } from "react"
+import { useContext, useEffect } from "react"
 import { Navbar } from "../_global/Navbar.profile"
 import { Grid, GridItem, Container, useDisclosure } from "@chakra-ui/react"
 import Sidebar from "../_global/Sidebar.profile"
+import { ScanSecureContext } from "../../contexts"
+import { useRouter } from "next/router"
 
 export default function Profile({ children }) {
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const { isWhitelisted } = useContext(ScanSecureContext)
+    const router = useRouter()
 
     // OpenSidebar for frist load (default)
     useEffect(() => onOpen(), [onOpen])
+
+    useEffect(() => {
+        if (!isWhitelisted) router.push('/')
+    }, [isWhitelisted, router])
 
     return (
         <Grid

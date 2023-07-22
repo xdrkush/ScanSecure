@@ -2,6 +2,7 @@ import {
     Button, Menu, MenuButton,
     MenuList, MenuGroup, MenuDivider,
     MenuItem,
+    Box,
 } from "@chakra-ui/react"
 import Link from 'next/link'
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -11,8 +12,8 @@ import { ScanSecureContext } from "../../contexts";
 import { Register } from "../profile/Register";
 
 export default function ButtonProfile() {
-    const { isConnected, address } = useAccount()
-    const { isWhitelisted, isAdmin, register } = useContext(ScanSecureContext)
+    const { isConnected } = useAccount()
+    const { isWhitelisted, isAdmin } = useContext(ScanSecureContext)
 
     return (
         <>
@@ -30,14 +31,14 @@ export default function ButtonProfile() {
                     />
                 </Menu>
             ) : (
-                <Menu>
+                <>
 
                     {!isWhitelisted ? (
                         <Menu>
                             <Register />
                         </Menu>
                     ) : (
-                        <Menu>
+                        <Menu variant="droped">
                             <MenuButton as={Button}>
                                 Profile
                             </MenuButton>
@@ -69,7 +70,7 @@ export default function ButtonProfile() {
                             </MenuList>
                         </Menu>
                     )}
-                </Menu>
+                </>
             )}
         </>
     )

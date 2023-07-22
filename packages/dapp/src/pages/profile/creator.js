@@ -1,28 +1,32 @@
 import { Box, Grid } from "@chakra-ui/react"
 import ProfileLayout from "../../components/layouts/Profile.layout"
-import { AskCertification } from "../../components/profile/AskCertification"
 import { CreateEvent } from "../../components/event/CreateEvent"
 import { CreateTickets } from "../../components/ticket/CreateTickets"
 import { SetStatusEvent } from "../../components/event/SetStatusEvent"
-import { BuyTicket } from "../../components/ticket/BuyTicket"
-import { OfferTicket } from "../../components/ticket/OfferTicket"
-import { ConsumeTicket } from "../../components/ticket/ConsumeTicket"
+import { useContext, useEffect } from "react"
+import { ScanSecureContext } from "../../contexts"
+import { useRouter } from "next/router"
 
-export default function Profile() {
+export default function ProfileEvent() {
+    const { isCreator } = useContext(ScanSecureContext)
+    const router = useRouter()
+
+    useEffect(() => {
+        if (!isCreator) router.push('/')
+    }, [isCreator, router])
+
     return (
         <ProfileLayout>
-            <Box>Profile</Box>
+            <Box>Creator</Box>
+
             <Grid py={3} minH={"20vh"}>
-                <AskCertification />
+                <CreateEvent />
             </Grid>
             <Grid py={3} minH={"20vh"}>
-                <BuyTicket />
+                <CreateTickets />
             </Grid>
             <Grid py={3} minH={"20vh"}>
-                <OfferTicket />
-            </Grid>
-            <Grid py={3} minH={"20vh"}>
-                <ConsumeTicket />
+                <SetStatusEvent />
             </Grid>
         </ProfileLayout>
     )

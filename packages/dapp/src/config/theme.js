@@ -1,39 +1,54 @@
 import { extendTheme } from '@chakra-ui/react'
 
 const global = {
-    styles: {
-        global: {
-            // styles for the `body`
-            body: {
-                bg: 'gray.400',
-                color: 'white',
-            },
-            // styles for the `a`
-            a: {
-                color: 'teal.500',
-                _hover: {
-                    textDecoration: 'underline',
-                },
-            },
+    // styles for the `body`
+    body: {
+        bg: 'primary.500',
+        color: '#000',
+    },
+    // styles for the `a`
+    a: {
+        color: 'accent.500',
+        _hover: {
+            textDecoration: 'underline',
         },
     },
 }
 
 // Colors
 const colors = {
-    colors: {
-        transparent: 'transparent',
-        black: '#000',
-        white: '#fff',
-        gray: {
-            50: '#f7fafc',
-            900: '#171923',
-        },
-        brand: {
-            100: "#f7fafc",
-            // ...
-            900: "#1a202c",
-        },
+    transparent: 'transparent',
+    black: '#000',
+    white: '#fff',
+    gray: {
+        50: '#f7fafc',
+        900: '#171923',
+    },
+    brand: {
+        100: "#f7fafc",
+        // ...
+        900: "#1a202c",
+    },
+    primary: {
+        100: "#2933F4",
+        300: "#252EDB",
+        500: "#2028BD",
+        700: "#141975",
+        900: "#090B36",
+    },
+    secondary: {
+        100: "#87CCF5",
+        300: "#79B7DB",
+        500: "#679DBC",
+        700: "#416275",
+        900: "#1D2D36",
+    },
+    accent: {
+        100: "#AB6FF5",
+        300: "#9963DB",
+        500: "#7E51B5",
+        700: "#523575",
+        900: "#251836",
     },
 }
 
@@ -107,45 +122,107 @@ const breakpoints = {
 }
 
 const components = {
-    components: {
-        Button: {
-            // 1. We can update the base styles
-            baseStyle: {
-                fontWeight: 'bold', // Normally, it is "semibold"
-            },
-            // 2. We can add a new button size or extend existing
-            sizes: {
-                xl: {
-                    h: '56px',
-                    fontSize: 'lg',
-                    px: '32px',
-                },
-            },
-            // 3. We can add a new visual variant
-            variants: {
-                'with-shadow': {
-                    bg: 'red.400',
-                    boxShadow: '0 0 2px 2px #efdfde',
-                },
-                // 4. We can override existing variants
-                solid: (props) => ({
-                    bg: props.colorMode === 'dark' ? 'red.300' : 'red.500',
-                }),
-                // 5. We can add responsive variants
-                sm: {
-                    bg: 'teal.500',
-                    fontSize: 'md',
-                },
-            },
-            // 6. We can overwrite defaultProps
-            defaultProps: {
-                size: 'lg', // default is md
-                variant: 'sm', // default is solid
-                colorScheme: 'green', // default is gray
+    Button: {
+        // 1. We can update the base styles
+        baseStyle: {
+            fontWeight: 'bold', // Normally, it is "semibold"
+        },
+        // 2. We can add a new button size or extend existing
+        sizes: {
+            xl: {
+                h: '56px',
+                fontSize: 'lg',
+                px: '32px',
             },
         },
+        // 3. We can add a new visual variant
+        variants: {
+            // 'with-shadow': {
+            //     bg: 'red.400',
+            //     boxShadow: '0 0 2px 2px #efdfde',
+            // },
+            // // 4. We can override existing variants
+            // solid: (props) => ({
+            //     bg: props.colorMode === 'dark' ? 'red.300' : 'red.500',
+            // }),
+            // // 5. We can add responsive variants
+            // sm: {
+            //     bg: 'teal.500',
+            //     fontSize: 'md',
+            // },
+        },
+        // 6. We can overwrite defaultProps
+        defaultProps: {
+            size: 'lg', // default is md
+            variant: 'sm', // default is solid
+            colorScheme: 'green', // default is gray
+        },
+    },
+    Menu: {
+        variants: {
+            droped: {
+                list: {
+                    "--menu-bg": "colors.primary.500",
+                    "--menu-shadow": "shadows.sm",
+                    bg: "var(--menu-bg)",
+                    borderRadius: "md",
+                    borderWidth: "1px",
+                    boxShadow: "var(--menu-shadow)",
+                    color: "inherit",
+                    minW: "3xs",
+                    py: "2",
+                    zIndex: 1,
+                    _dark: {
+                        "--menu-bg": "colors.primary.900",
+                        "--menu-shadow": "shadows.dark-lg",
+                    },
+                },
+                item: {
+                    bg: "var(--menu-bg)",
+                    px: "3",
+                    py: "1.5",
+                    transitionDuration: "ultra-fast",
+                    transitionProperty: "background",
+                    transitionTimingFunction: "ease-in",
+                    _hover: {
+                        "--menu-bg": "colors.accent.500",
+                        "--menu-shadow": "shadows.dark-lg",
+                    },
+                    _dark: {
+                        _hover: {
+                            "--menu-bg": "colors.accent.500",
+                            "--menu-shadow": "shadows.dark-lg",
+                        },
+                    },
+                }
+            }
+        }
+    },
+    Container: {
+        baseStyle: {
+            maxW: "prose",
+            mx: "auto",
+            px: "4",
+            w: "100%"
+        },
+        variants: {
+            styled1: {
+                boxShadow: '0 0 20px 20px accent.300',
+                p: 5,
+                border: '#000',
+                borderRadius: '5',
+            },
+        },
+
     },
 }
 
-const theme = extendTheme({ global, colors, typography, breakpoints, components })
+const config = {
+    initialColorMode: "light",
+    useSystemColorMode: true,
+}
+
+const theme = extendTheme({ config, global, colors, typography, breakpoints, components })
 export default theme
+
+console.log(theme)

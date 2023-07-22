@@ -11,6 +11,7 @@ export default function ScanSecureProvider({ children }) {
         createEvent, setStatusEvent,
         createTickets, buyTicket, offerTicket, consumeTicket,
         getUser, getEvent, getTicket,
+        eventLastId, totalMembers,
         profile,whitelist,askCertificationLogs,certifiedLogs,
         eventCreatedLogs,eventStatusChangedLogs,newTicketsLogs,
         ticketOwneredLogs,ticketConsumedLogs,sumRecoveredLogs
@@ -24,6 +25,7 @@ export default function ScanSecureProvider({ children }) {
         createEvent, setStatusEvent,
         createTickets, buyTicket, offerTicket, consumeTicket,
         getUser, getEvent, getTicket,
+        eventLastId, totalMembers,
         profile,whitelist,askCertificationLogs,certifiedLogs,
         eventCreatedLogs,eventStatusChangedLogs,newTicketsLogs,
         ticketOwneredLogs,ticketConsumedLogs,sumRecoveredLogs
@@ -34,6 +36,7 @@ export default function ScanSecureProvider({ children }) {
         createEvent, setStatusEvent,
         createTickets, buyTicket, offerTicket, consumeTicket,
         getUser, getEvent, getTicket,
+        eventLastId, totalMembers,
         profile,whitelist,askCertificationLogs,certifiedLogs,
         eventCreatedLogs,eventStatusChangedLogs,newTicketsLogs,
         ticketOwneredLogs,ticketConsumedLogs,sumRecoveredLogs

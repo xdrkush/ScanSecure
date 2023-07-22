@@ -9,6 +9,8 @@ import { ColorModeSwitcher } from "../ColorSwitcher"
 import ButtonProfile from "./ButtonProfile";
 
 export function Navbar({ isOpen }) {
+    const color1 = useColorModeValue("primary.500", "primary.900")
+    const color4 = useColorModeValue("accent.500", "accent.500")
 
     return (
         <Box>
@@ -16,44 +18,35 @@ export function Navbar({ isOpen }) {
                 w={"100%"}
                 position="fixed"
                 zIndex="10"
-                bg={useColorModeValue("white", "gray.800")}
-                color={useColorModeValue("gray.600", "white")}
+                bg={color1}
+                color={"white"}
                 minH={"60px"}
                 py={{ base: 2 }}
                 px={{ base: 4 }}
                 borderBottom={1}
                 borderStyle={"solid"}
-                borderColor={useColorModeValue("gray.100", "primary.100")}
+                borderColor={color4}
                 align={"center"}
+                justify={"space-between"}
             >
                 {/* HOME LINK */}
                 <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-                    <Box
-                        display="flex"
-                        color={useColorModeValue("gray.800", "white")}
-                        fontSize={"lg"}
-                        _hover={{
-                            textDecoration: "none",
-                            color: useColorModeValue("gray.800", "white"),
-                        }}
-                        fontWeight="bold"
-                    >
-                        <Link href="/">
-                            ScanSecure
-                        </Link>
-                    </Box>
+                    <Link href="/">
+                        <Box
+                            display="flex"
+                            color={"secondary.100"}
+                            fontSize={"lg"}
+                            fontWeight="bold"
+                        >
+                            0xScanSecure
+                        </Box>
+                    </Link>
                 </Flex>
 
                 <Breadcrumb separator='-'>
                     <BreadcrumbItem>
                         <Link href="/events">
                             Events
-                        </Link>
-                    </BreadcrumbItem>
-
-                    <BreadcrumbItem>
-                        <Link href="/tickets">
-                            Tickets
                         </Link>
                     </BreadcrumbItem>
 
@@ -71,7 +64,7 @@ export function Navbar({ isOpen }) {
                 </Box>
 
                 <Box px={1}>
-                    <ButtonProfile/>
+                    <ButtonProfile />
                 </Box>
 
             </Flex>
