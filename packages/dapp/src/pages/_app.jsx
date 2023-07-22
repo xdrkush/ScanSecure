@@ -3,6 +3,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { WagmiConfig } from 'wagmi';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { chains, wagmiConfig } from '../config';
+import theme from "../config/theme.js"
 
 import "@rainbow-me/rainbowkit/styles.css";
 import ScanSecureProvider from '../providers/ScanSecureProvider';
@@ -14,7 +15,7 @@ export default function App({ Component, pageProps }) {
     useEffect(() => setMounted(true), [])
 
     return (
-        <ChakraProvider>
+        <ChakraProvider theme={theme}>
             {mounted && (
                 <WagmiConfig config={wagmiConfig}>
                     <RainbowKitProvider chains={chains}>
