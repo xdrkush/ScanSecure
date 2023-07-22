@@ -224,5 +224,3 @@ const config = {
 
 const theme = extendTheme({ config, global, colors, typography, breakpoints, components })
 export default theme
-
-console.log(theme)
