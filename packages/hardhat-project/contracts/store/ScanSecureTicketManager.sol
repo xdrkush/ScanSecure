@@ -7,7 +7,10 @@ import "./ScanSecureERC1155.sol";
 
 import {LibFees} from "../libs/LibFees.sol";
 
-//
+/**
+ * @title ScanSecureTicketManager
+ * @dev This contract extends AccessControl and ScanSecureStorage, providing ticket management functionalities for the ScanSecure application.
+ */
 abstract contract ScanSecureTicketManager is ScanSecureAccess {
     uint private fees = 5;
 
@@ -16,6 +19,9 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
         address _addrERC1155
     ) ScanSecureAccess(_addrUSDT, _addrERC1155) {}
 
+    /**
+     * @dev Modifier to check if the sender is a valid buyer (member, creator, or admin).
+     */
     modifier checkIsBuyer() {
         if (
             hasRole(MEMBER_ROLE, msg.sender) ||
@@ -26,6 +32,13 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
         } else revert("No Buyer");
     }
 
+    /**
+     * @dev Retrieves the ticket information for the specified event and ticket IDs.
+     * @param _event_id The identifier of the event.
+     * @param _ticket_id The identifier of the ticket within the event.
+     * @return The Ticket structure containing the price, owner, and status of the ticket.
+     * @notice The ticket must exist in the ticketsValidity mapping.
+     */
     function getTicket(
         uint _event_id,
         uint _ticket_id
@@ -36,6 +49,17 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
         );
         return ticketsValidity[_event_id][_ticket_id];
     }
+
+    /**
+     * @dev Allows a creator to create tickets for an event.
+     * @param _event_id The identifier of the event to create tickets for.
+     * @param _quantity The quantity of tickets to create.
+     * @param _price The price of each ticket.
+     * @notice The creator must be the author of the event, and the event must exist.
+     * The price and quantity must be greater than zero.
+     * The event's limitTickets property is set to the specified quantity, and the first ticket (ID 0) is created with the given price and author.
+     * An event is emitted to indicate the creation of new tickets.
+     */
 
     function createTickets(
         uint _event_id,
@@ -61,6 +85,16 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
         emit NewTickets(_event_id, _quantity, msg.sender);
     }
 
+    /**
+     * @dev Allows a buyer to purchase tickets for an event.
+     * @param _event_id The identifier of the event to buy tickets for.
+     * @param _quantity The quantity of tickets to purchase.
+     * @notice The event must exist, and there must be available tickets for purchase.
+     * The quantity must be between 1 and 100.
+     * The buyer must have the required USDT balance to cover the total cost of the tickets, including fees.
+     * Tickets are transferred from the event's author to the buyer, and new tickets are added to the ticketsValidity mapping.
+     * An event is emitted to indicate the ownership transfer of the tickets.
+     */
     function buyTicket(
         uint _event_id,
         uint _quantity
@@ -120,6 +154,13 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
         events[_event_id].totalSold += _quantity;
     }
 
+    /**
+     * @dev Allows a ticket owner to consume a ticket for an event.
+     * @param _event_id The identifier of the event.
+     * @param _ticket_id The identifier of the ticket to consume.
+     * @notice The ticket must exist and be owned by the caller.
+     * The ticket's status is set to 'consumed', and an event is emitted to indicate the ticket consumption.
+     */
     function consumeTicket(uint _event_id, uint _ticket_id) external {
         require(
             ticketsValidity[_event_id][_ticket_id].price > 0,
@@ -144,12 +185,25 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
         emit TicketConsumed(_event_id, _ticket_id, msg.sender);
     }
 
+    /**
+     * @dev Allows an admin to recover the USDT balance of the contract.
+     * @notice Only admins can call this function, and the total balance of the contract is transferred to the first owner of the contract.
+     * An event is emitted to indicate the sum recovery.
+     */
     function sumRecovery() external onlyRole(ADMIN_ROLE) {
         uint totalSum = usdtToken.balanceOf(address(this));
         usdtToken.transfer(firstOwner, totalSum);
         emit SumRecovered(totalSum, msg.sender);
     }
 
+    /**
+     * @dev Allows a ticket owner to offer a ticket to another address.
+     * @param _addr The address to offer the ticket to.
+     * @param _event_id The identifier of the event.
+     * @param _ticket_id The identifier of the ticket to offer.
+     * @notice The ticket must exist and be owned by the caller.
+     * The ticket ownership is transferred to the specified address, and an event is emitted to indicate the ticket ownership transfer.
+     */
     function offerTicket(
         address _addr,
         uint _event_id,
