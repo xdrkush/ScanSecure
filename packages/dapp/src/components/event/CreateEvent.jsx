@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormLabel, Input, InputGroup } from "@chakra-ui/react"
+import { Box, Button, FormControl, FormLabel, Heading, Input, InputGroup } from "@chakra-ui/react"
 import { useContext, useState } from "react"
 import { ScanSecureContext } from "../../contexts"
 
@@ -10,7 +10,8 @@ export const CreateEvent = () => {
     const checkTitle = () => title.length > 0
 
     return (
-        <Box p={5} border='1px' borderColor='gray.200' borderRadius="25">
+        <Box p={5} border='1px' borderColor='accent.500' borderRadius="25">
+            <Heading size="md">CreateEvent:</Heading>
             <Box px="2">
                 <InputGroup w="100%">
                     <FormControl id="Message">

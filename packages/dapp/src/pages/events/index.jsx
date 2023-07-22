@@ -1,11 +1,11 @@
 import MainLayout from "../../components/layouts/Main.layout"
-import { Box } from "@chakra-ui/react"
+import { Heading } from "@chakra-ui/react"
 import { ListEvent } from "../../components/event/ListEvent"
 
 export default function Events() {
     return (
         <MainLayout>
-            <Box>Events</Box>
+            <Heading size="md">Events</Heading>
             <ListEvent />
         </MainLayout>
     )

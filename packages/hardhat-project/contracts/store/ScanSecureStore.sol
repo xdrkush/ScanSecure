@@ -32,6 +32,9 @@ abstract contract ScanSecureStore is ScanSecureTicketManager {
     ) external {
         if (msg.sender != events[_event_id].author)
             revert("You are not creator of event");
+
+        if (EventStatus(uint(events[_event_id].status)) == EventStatus.closed)
+            revert("Event closed");
             
         EventStatus s = EventStatus(uint(events[_event_id].status));
         EventStatus newS = EventStatus(uint(events[_event_id].status) +1);

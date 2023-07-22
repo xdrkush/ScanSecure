@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormLabel, Input, InputGroup } from "@chakra-ui/react"
+import { Box, Button, FormControl, FormLabel, Heading, Input, InputGroup } from "@chakra-ui/react"
 import { useContext, useState } from "react"
 import { ScanSecureContext } from "../../contexts"
 
@@ -11,7 +11,8 @@ export const ConsumeTicket = () => {
     const checkTicketId = () => ticket_id > 0
 
     return (
-        <>
+        <Box p={5} border='1px' borderColor='accent.500' borderRadius="25">
+            <Heading size="md">ConsumeTicket:</Heading>
             <Box px="2">
                 <InputGroup w="100%">
                     <FormControl id="EventId">
@@ -40,6 +41,6 @@ export const ConsumeTicket = () => {
                     Consume Tickets
                 </Button>
             </Box>
-        </>
+        </Box>
     )
 }

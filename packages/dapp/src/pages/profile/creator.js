@@ -1,4 +1,4 @@
-import { Box, Grid } from "@chakra-ui/react"
+import { Grid, Heading } from "@chakra-ui/react"
 import ProfileLayout from "../../components/layouts/Profile.layout"
 import { CreateEvent } from "../../components/event/CreateEvent"
 import { CreateTickets } from "../../components/ticket/CreateTickets"
@@ -17,7 +17,7 @@ export default function ProfileEvent() {
 
     return (
         <ProfileLayout>
-            <Box>Creator</Box>
+            <Heading size="md">Creator</Heading>
 
             <Grid py={3} minH={"20vh"}>
                 <CreateEvent />

@@ -1,4 +1,4 @@
-import { Box, Button, Container, Flex, FormControl, FormLabel, Input, InputGroup, Wrap } from "@chakra-ui/react"
+import { Box, Button, Container, Flex, FormControl, FormLabel, Heading, Input, InputGroup, Wrap } from "@chakra-ui/react"
 import { useContext, useEffect, useState } from "react"
 import { ScanSecureContext } from "../../contexts"
 
@@ -17,7 +17,8 @@ export const BuyTicket = ({ eventId, onlyQuantity }) => {
     }, [eventId])
 
     return (
-        <Container variant='styled1'>
+        <Box p={5} border='1px' borderColor='accent.500' borderRadius="25">
+            <Heading size="md">BuyTicket:</Heading>
             <Box align="center">
                 <InputGroup w="100%">
                     {!onlyQuantity && (
@@ -42,13 +43,13 @@ export const BuyTicket = ({ eventId, onlyQuantity }) => {
                 </InputGroup>
 
                 {isWhitelisted && (
-                    <Button type="submit" color="primary.100"  mr={3}
+                    <Button type="submit" color="primary.100" mr={3}
                         variant={checkEventId() && checkQuantity() ? "solid" : "outlined"} isDisabled={!checkEventId() || !checkQuantity()}
                         onClick={() => buyTicket(event_id, quantity)}>
                         Buy Tickets
                     </Button>
                 )}
             </Box>
-        </Container>
+        </Box>
     )
 }

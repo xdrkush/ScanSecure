@@ -17,8 +17,6 @@ const CardEvent = ({ id }) => {
         init()
     }, [id])
 
-    console.log("event", event, createArrayByLength(3))
-
     return (
         <Card>
             <CardHeader>
@@ -40,9 +38,8 @@ export const ListEvent = () => {
     const { eventLastId } = useContext(ScanSecureContext)
 
     return (
-        <Box>
-
-            <Box>ListEvent: (total = {String(eventLastId)})</Box>
+        <Box p={5} border='1px' borderColor='accent.500' borderRadius="25">
+            <Heading size="md">ListEvent: (total = {String(eventLastId)}):</Heading>
 
             <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(200px, 1fr))'>
                 {eventLastId >= 0 && createArrayByLength(eventLastId).map((el, i) => (

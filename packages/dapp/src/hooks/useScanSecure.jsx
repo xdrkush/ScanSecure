@@ -82,7 +82,6 @@ export function useScanSecure() {
 
     // Roles
     const checkRoles = useCallback(async () => {
-        console.log('checkRoles')
         // IsWhitelisted
         try {
             const data = await readContract({
@@ -94,7 +93,6 @@ export function useScanSecure() {
             setIsWhitelisted(data)
         } catch (error) {
             setIsWhitelisted(false)
-            setNotif({ type: "error", message: String(error) })
         }
         // IsCreator
         try {
@@ -107,7 +105,6 @@ export function useScanSecure() {
             setIsCreator(data)
         } catch (error) {
             setIsCreator(false)
-            setNotif({ type: "error", message: String(error) })
         }
         // IsWhitelisted
         try {
@@ -120,16 +117,13 @@ export function useScanSecure() {
             setIsAdmin(data)
         } catch (error) {
             setIsAdmin(false)
-            setNotif({ type: "error", message: String(error) })
         }
     }, [address])
 
     const checkUser = useCallback(async () => {
-        console.log('checkUser')
         // Profile user
         try {
             const data = await getUser(address)
-            console.log('Profile', data)
             setProfile(data)
         } catch (error) {
             setNotif({ type: "error", message: String(error) })
@@ -158,7 +152,6 @@ export function useScanSecure() {
     }
     const setApprovalForAll = async () => {
         try {
-            console.log('setApproval')
             const { request } = await prepareWriteContract({
                 address: config.contracts.scanSecureERC1155.address,
                 abi: config.contracts.scanSecureERC1155.abi,
@@ -180,9 +173,7 @@ export function useScanSecure() {
         }
     }
     const approveTether = async (_total) => {
-        console.log("approveTether", _total)
         try {
-            console.log('setApproval')
             const { request } = await prepareWriteContract({
                 address: config.contracts.tether.address,
                 abi: config.contracts.tether.abi,
@@ -194,7 +185,6 @@ export function useScanSecure() {
             setNotif({ type: "error", message: String(error) })
         }
         try {
-            console.log('setApproval')
             const { request } = await prepareWriteContract({
                 address: config.contracts.tether.address,
                 abi: config.contracts.tether.abi,
@@ -292,10 +282,8 @@ export function useScanSecure() {
         }
     }
     const buyTicket = async (_event_id, _quantity) => {
-        console.log("price",_event_id, typeof price, typeof _quantity)
         try {
             const { price } = await getTicket(_event_id, 0)
-            console.log("price", price, calcFees(price * BigInt(_quantity)).total)
             await approveTether(calcFees(price * BigInt(_quantity)).total)
 
             const { request } = await prepareWriteContract({
@@ -351,21 +339,6 @@ export function useScanSecure() {
         }
     }
 
-    // const incStore = async () => {
-    //     if (!isWhitelisted) return;
-    //     try {
-    //         const { request } = await prepareWriteContract({
-    //             address: getAddress(config.contracts.scanSecure.address),
-    //             abi: config.contracts.scanSecure.abi,
-    //             functionName: 'setStore'
-    //         })
-    //         await transactionsCompleted(request)
-    //         getStore()
-    //     } catch (error) {
-    //         setNotif({ type: "error", message: String(error) })
-    //     }
-    // }
-
     /*
      * Getters
      * ************** */
@@ -416,7 +389,6 @@ export function useScanSecure() {
                 functionName: 'eventLastId',
             })
             
-            console.log('getEventLastId', data)
             setEventLastId(Number(data))
         } catch (error) {
             setNotif({ type: "error", message: String(error) })
@@ -430,7 +402,6 @@ export function useScanSecure() {
                 functionName: 'totalMembers',
             })
             
-            console.log('getTotalMembers', data)
             setEventLastId(Number(data))
         } catch (error) {
             setNotif({ type: "error", message: String(error) })
@@ -448,37 +419,16 @@ export function useScanSecure() {
             console.log('wevent1', address, String(log[0].args.addr))
             console.log('wevent2', whitelist, String(address) === String(log[0].args.addr))
             if (String(address) === String(log[0].args.addr)) {
-                setNotif({ type: 'info', message: 'Vous êtes Whitelisted' })
                 checkRoles()
+                setNotif({ type: 'info', message: 'Vous êtes Whitelisted' })
             }
-            setNotif({ type: 'info', message: String(log[0].args.addr) })
-            if (!whitelist) return;
-            setWhitelist([...whitelist, { id: whitelist.length, address: String(log[0].args.addr) }])
         }
     })
 
     /*
      * Event logs
      * ************** */
-    // const loadMoreWhitelisted = async () => {
-    //     const lastBlock = BigInt(Number(await client.getBlockNumber()) - 5000)
-    //     const page = lastBlock % initContract
-
-    //     const filter = await client.createEventFilter({
-    //         address: getAddress(config.contracts.scanSecure.address),
-    //         event: parseAbiItem(
-    //             "event Whitelisted(address indexed addr)"
-    //         ),
-    //         fromBlock: 0n,
-    //         toBlock: 'latest'
-    //     })
-
-    //     const logs = await client.getFilterLogs({ filter })
-    //     console.log('more event', logs)
-    // }
-
     const getWhitelisted = async () => {
-        console.log(scanSecureSC)
         const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
         const logs = await client.getLogs({
@@ -488,7 +438,7 @@ export function useScanSecure() {
             ),
             fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
         });
-        console.log('log1', logs)
+        console.log('getWhitelisted', logs)
 
         const arr = (await Promise.all(logs.map(async (log, i) => {
             return { id: Number(i + 1), address: String(log.args.addr) };

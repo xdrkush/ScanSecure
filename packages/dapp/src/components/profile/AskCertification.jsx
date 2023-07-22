@@ -1,16 +1,17 @@
-import { Box, Button, FormControl, FormLabel, Input, InputGroup } from "@chakra-ui/react"
+import { Box, Button, FormControl, FormLabel, Heading, Input, InputGroup } from "@chakra-ui/react"
 import { useContext, useState } from "react"
 import { ScanSecureContext } from "../../contexts"
 
 
 export const AskCertification = () => {
-    const { askCertification, isWhitelisted, isCreator, isAdmin } = useContext(ScanSecureContext)
+    const { askCertification } = useContext(ScanSecureContext)
     const [message, setMessage] = useState("")
 
     const checkMessage = () => message.length > 0
 
     return (
-        <>
+        <Box p={5} border='1px' borderColor='accent.500' borderRadius="25">
+            <Heading size="md">AskCertification:</Heading>
             <Box px="2">
                 <InputGroup w="100%">
                     <FormControl id="Message">
@@ -32,6 +33,6 @@ export const AskCertification = () => {
                     Ask Certification
                 </Button>
             </Box>
-        </>
+        </Box>
     )
 }

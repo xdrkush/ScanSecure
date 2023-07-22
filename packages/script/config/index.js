@@ -33,7 +33,7 @@ loadChain()
 
 // Client viem
 const url = process.env.CLIENT_CHAIN === "hardhat" ? `http://localhost:8545` : `https://sepolia.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
-console.log("url", url)
+
 export const [account, owner, second, third, fourth] = [
     privateKeyToAccount(`0x${process.env.ETH_PRIVATE_KEY}`),
     privateKeyToAccount(`0x${process.env.OWNER}`),

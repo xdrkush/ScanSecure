@@ -164,14 +164,6 @@ describe("ScanSecure", function () {
 
     describe("ScanSecure", async function () {
 
-      describe("AccessControle", function () {
-        it("DEFAULT_ADMIN_ROLE", async function () {
-          const { scanSecure, scanSecureERC1155 } = await loadFixture(deployContextInit);
-          // console.log(scanSecure.callStatic)
-          // console.log(scanSecureERC1155.callStatic)
-        });
-      })
-
       describe("Role", function () {
         it("Should rigth ADMIN_ROLE", async function () {
           const { scanSecure } = await loadFixture(deployContextInit);
@@ -312,6 +304,16 @@ describe("ScanSecure", function () {
           const { scanSecure, addr2 } = await loadFixture(deployContextCreateEvent);
           await expect(scanSecure.connect(addr2).setStatusEvent(1))
             .to.be.revertedWith(`You are not creator of event`)
+        });
+        it("SetStatusEvent : Should rigth error event closed", async function () {
+          const { scanSecure, addr1 } = await loadFixture(deployContextCreateTickets);
+          scanSecure.connect(addr1).setStatusEvent(1)
+          scanSecure.connect(addr1).setStatusEvent(1)
+          scanSecure.connect(addr1).setStatusEvent(1)
+          scanSecure.connect(addr1).setStatusEvent(1)
+          
+          await expect(scanSecure.connect(addr1).setStatusEvent(1))
+            .to.be.revertedWith(`Event closed`)
         });
         it("SetStatusEvent -> Event EventStatusChanged", async function () {
           const { scanSecure, addr1 } = await loadFixture(deployContextCreateEvent);
