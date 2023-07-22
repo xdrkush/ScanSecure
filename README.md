@@ -199,27 +199,16 @@ graph TD
     D -->|use| J
     
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#f9f,stroke:#333,stroke-width:2px
-    style C fill:#f9f,stroke:#333,stroke-width:2px
-    style D fill:#f9f,stroke:#333,stroke-width:2px
-    style E fill:#f9f,stroke:#333,stroke-width:2px
-    style F fill:#f9f,stroke:#333,stroke-width:2px
-    style G fill:#f9f,stroke:#333,stroke-width:2px
-    style H fill:#f9f,stroke:#333,stroke-width:2px
-    style I fill:#f9f,stroke:#333,stroke-width:2px
-    style J fill:#f9f,stroke:#333,stroke-width:2px
-
-    style A stroke:#000,stroke-width:2px
-    style B stroke:#000,stroke-width:2px
-    style C stroke:#000,stroke-width:2px
-    style D stroke:#000,stroke-width:2px
-    style E stroke:#000,stroke-width:2px
-    style F stroke:#000,stroke-width:2px
-    style G stroke:#000,stroke-width:2px
-    style H stroke:#000,stroke-width:2px
-    style I stroke:#000,stroke-width:2px
-    style J stroke:#000,stroke-width:2px
+    style A fill:#a9f,stroke:#333,stroke-width:2px
+    style B fill:#a9f,stroke:#333,stroke-width:2px
+    style C fill:#a9f,stroke:#333,stroke-width:2px
+    style D fill:#a9f,stroke:#333,stroke-width:2px
+    style E fill:#a9f,stroke:#333,stroke-width:2px
+    style F fill:#a9f,stroke:#333,stroke-width:2px
+    style G fill:#a9f,stroke:#333,stroke-width:2px
+    style H fill:#a9f,stroke:#333,stroke-width:2px
+    style I fill:#a9f,stroke:#333,stroke-width:2px
+    style J fill:#a9f,stroke:#333,stroke-width:2px
 
 ```
 
