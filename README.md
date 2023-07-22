@@ -11,6 +11,85 @@
 
 [Lien vers la demo](https://scan-secure-dapp.vercel.app/)
 
+___
+
+## Install
+
+```sh
+git clone https://github.com/xdrkush/ScanSecure.git
+cd ScanSecure.git
+yarn
+```
+
+## Run
+
+#### DApp
+
+!!! | More Information commands in package.json or docs
+
+###### Dev
+
+```sh
+yarn dapp:dev
+```
+
+###### Build
+
+```sh
+yarn dapp:build
+```
+
+###### Start
+
+```sh
+yarn dapp:start
+```
+
+
+
+#### Contract
+
+!!! | information commands in package.json or doc (npx hardhat ... -> in ./packages/hardhat-project)
+
+###### Test
+
+```sh
+yarn sc:test
+```
+
+###### Coverage
+
+```sh
+yarn sc:coverage
+```
+
+###### Deploy (local)
+
+```sh
+yarn sc:deploy:local
+```
+
+###### Deploy (Sepolia)
+
+```sh
+yarn sc:deploy:sepolia
+```
+
+#### Script
+
+!!! | Warning with uncomment all
+
+###### Dev
+
+```sh
+yarn script:dev
+```
+
+###### Start
+
+```sh
+yarn script:start
+```
 
 ___
 
@@ -203,86 +282,6 @@ classDiagram
 `MEMBER_ROLE`=0x829b824e2329e205435d941c9f13baf578548505283d29261236d8e6596d4636
 `CREATOR_ROLE`=0x828634d95e775031b9ff576b159a8509d3053581a8c9c4d7d86899e0afcd882f
 `ADMIN_ROLE`=0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775
-
-___
-
-## Install
-
-```sh
-git clone https://github.com/xdrkush/ScanSecure.git
-cd ScanSecure.git
-yarn
-```
-
-## Run
-
-#### DApp
-
-!!! | More Information commands in package.json or docs
-
-###### Dev
-
-```sh
-yarn dapp:dev
-```
-
-###### Build
-
-```sh
-yarn dapp:build
-```
-
-###### Start
-
-```sh
-yarn dapp:start
-```
-
-
-
-#### Contract
-
-!!! | information commands in package.json or doc (npx hardhat ... -> in ./packages/hardhat-project)
-
-###### Test
-
-```sh
-yarn sc:test
-```
-
-###### Coverage
-
-```sh
-yarn sc:coverage
-```
-
-###### Deploy (local)
-
-```sh
-yarn sc:deploy:local
-```
-
-###### Deploy (Sepolia)
-
-```sh
-yarn sc:deploy:sepolia
-```
-
-#### Script
-
-!!! | Warning with uncomment all
-
-###### Dev
-
-```sh
-yarn script:dev
-```
-
-###### Start
-
-```sh
-yarn script:start
-```
 
 ___
 
