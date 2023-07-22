@@ -1,6 +1,6 @@
 import { config, client, account } from "./config/index.js";
 
-async function init(req, res) {
+async function init() {
     console.log('init')
 
     // Total supplyt

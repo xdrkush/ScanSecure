@@ -1,22 +1,22 @@
 import { parseEther } from "viem";
 import { config, client, owner, second, third, fourth } from "./config/index.js";
 
-async function init(req, res) {
+async function init() {
     console.log('init')
 
     // Transfert USDT
-    // try {
-    //     const data = await client.writeContract({
-    //         abi: config.contracts.tether.abi,
-    //         address: config.contracts.tether.address,
-    //         functionName: 'transfer',
-    //         account: owner,
-    //         args: [second.address, 15000 * (10 ** 18)]
-    //     })
-    //     console.log('transfer', data)
-    // } catch (error) {
-    //     console.log(error.message)
-    // }
+    try {
+        const data = await client.writeContract({
+            abi: config.contracts.tether.abi,
+            address: config.contracts.tether.address,
+            functionName: 'transfer',
+            account: owner,
+            args: [second.address, 15000 * (10 ** 18)]
+        })
+        console.log('transfer', data)
+    } catch (error) {
+        console.log(error.message)
+    }
     // try {
     //     const data = await client.writeContract({
     //         abi: config.contracts.tether.abi,

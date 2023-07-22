@@ -1,6 +1,7 @@
 import { mainnet, sepolia, hardhat, polygonMumbai } from "wagmi/chains";
 import { createWalletClient, http, publicActions } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
+// Import contract
 import scansecure from "./abis/scansecure.js";
 import scansecureERC1155 from "./abis/scansecureERC1155.js";
 import tethertoken from "./abis/tethertoken.js";
@@ -32,7 +33,9 @@ const loadChain = () => {
 loadChain()
 
 // Client viem
-const url = process.env.CLIENT_CHAIN === "hardhat" ? `http://localhost:8545` : `https://sepolia.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+const url = process.env.CLIENT_CHAIN === "hardhat" 
+? `http://localhost:8545` 
+: `https://sepolia.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
 
 export const [account, owner, second, third, fourth] = [
     privateKeyToAccount(`0x${process.env.ETH_PRIVATE_KEY}`),
