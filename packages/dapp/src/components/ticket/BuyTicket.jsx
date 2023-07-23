@@ -4,7 +4,7 @@ import { ScanSecureContext } from "../../contexts"
 
 
 export const BuyTicket = ({ eventId, onlyQuantity }) => {
-    const { buyTicket, isWhitelisted, eventLastId } = useContext(ScanSecureContext)
+    const { buyTicket, eventLastId } = useContext(ScanSecureContext)
     const [event_id, setEventId] = useState(null)
     const [quantity, setQuantity] = useState(0)
 
@@ -42,13 +42,11 @@ export const BuyTicket = ({ eventId, onlyQuantity }) => {
                     </FormControl>
                 </InputGroup>
 
-                {isWhitelisted && (
-                    <Button type="submit" color="primary.100" mr={3}
-                        variant={checkEventId() && checkQuantity() ? "solid" : "outlined"} isDisabled={!checkEventId() || !checkQuantity()}
-                        onClick={() => buyTicket(event_id, quantity)}>
-                        Buy Tickets
-                    </Button>
-                )}
+                <Button type="submit" color="primary.100" mr={3}
+                    variant={checkEventId() && checkQuantity() ? "solid" : "outlined"} isDisabled={!checkEventId() || !checkQuantity()}
+                    onClick={() => buyTicket(event_id, quantity)}>
+                    Buy Tickets
+                </Button>
             </Box>
         </Box>
     )

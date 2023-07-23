@@ -3,10 +3,18 @@ import ProfileLayout from "../../components/layouts/Profile.layout"
 import { AskCertification } from "../../components/profile/AskCertification"
 import { BuyTicket } from "../../components/ticket/BuyTicket"
 import { ScanSecureContext } from "../../contexts"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
+import { useRouter } from "next/router"
 
 export default function Profile() {
     const { isWhitelisted } = useContext(ScanSecureContext)
+    const router = useRouter()
+
+    useEffect(() => {
+        if (!isWhitelisted) router.push('/')
+    }, [isWhitelisted, router])
+
+
     return (
         <ProfileLayout>
             <Heading size="md">My Profile</Heading>

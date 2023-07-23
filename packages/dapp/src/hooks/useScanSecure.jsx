@@ -402,7 +402,7 @@ export function useScanSecure() {
                 functionName: 'totalMembers',
             })
             
-            setEventLastId(Number(data))
+            setTotalMembers(Number(data))
         } catch (error) {
             setNotif({ type: "error", message: String(error) })
         }
