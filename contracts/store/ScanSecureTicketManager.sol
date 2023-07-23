@@ -43,10 +43,9 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
         uint _event_id,
         uint _ticket_id
     ) external view returns (Ticket memory) {
-        require(
-            ticketsValidity[_event_id][_ticket_id].price > 0,
-            "Ticket not exist"
-        );
+        if (ticketsValidity[_event_id][_ticket_id].price <= 0)
+            revert("Ticket not exist");
+
         return ticketsValidity[_event_id][_ticket_id];
     }
 
@@ -80,12 +79,12 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
         uint _quantity,
         uint _price
     ) external onlyRole(CREATOR_ROLE) {
-        require(_event_id >= 0 && _event_id <= eventLastId, "Event not exist");
-        require(
-            msg.sender == events[_event_id].author,
-            "You are not author of event"
-        );
-        require(_price > 0 && _quantity > 0, "Not rigth price or quantity");
+        if (_event_id < 0 || _event_id >= eventLastId)
+            revert("Event not exist");
+        if (msg.sender != events[_event_id].author)
+            revert("You are not author of event");
+        if (_price <= 0 || _quantity <= 0)
+            revert("Not rigth price or quantity");
 
         ScErc1155.mint(msg.sender, _event_id, _quantity);
 
@@ -113,26 +112,26 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
         uint _event_id,
         uint _quantity
     ) external payable checkIsBuyer {
-        require(_event_id >= 0 && _event_id <= eventLastId, "Event not exist");
+        if (_event_id < 0 || _event_id >= eventLastId)
+            revert("Event not exist");
         Event storage e = events[_event_id];
-        require(e.totalSold < e.limitTickets, "Sold Out");
-        require(e.limitTickets - e.totalSold >= _quantity, "No more ticket");
-        require(
-            _quantity > 0 && _quantity <= 100,
-            "Quantity should be between zero & 100"
-        );
-        require(e.status == EventStatus.buyingTicket, "Its not rigth status");
+        if (e.totalSold == e.limitTickets) revert("Sold Out");
+        if (e.limitTickets - e.totalSold < _quantity) revert("No more ticket");
+        if (_quantity <= 0 || _quantity > 100)
+            revert("Quantity should be between zero & 100");
+        if (uint(e.status) != uint(EventStatus.buyingTicket))
+            revert("Its not rigth status");
 
         uint totalPrice = _quantity * ticketsValidity[_event_id][0].price;
         uint totalFees = LibFees.calcFees(totalPrice);
         uint totalCost = totalPrice + totalFees;
 
         address seller = events[_event_id].author;
-        require(
-            ScErc1155.isApprovedForAll(seller, address(this)),
-            "Contract not approved to spend ticket"
-        );
-        require(usdtToken.balanceOf(msg.sender) >= totalCost, "Not fund");
+
+        if (!ScErc1155.isApprovedForAll(seller, address(this)))
+            revert("Contract not approved to spend ticket");
+
+        if (usdtToken.balanceOf(msg.sender) <= totalCost) revert("Not fund");
 
         // Paid fees for contract
         usdtToken.transferFrom(msg.sender, address(this), totalFees);
@@ -178,23 +177,17 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
      * The ticket's status is set to 'consumed', and an event is emitted to indicate the ticket consumption.
      */
     function consumeTicket(uint _event_id, uint _ticket_id) external {
-        require(
-            ticketsValidity[_event_id][_ticket_id].price > 0,
-            "Ticket not exist"
-        );
-        require(
-            ScErc1155.balanceOf(msg.sender, _event_id) > 0,
-            "You dont have a ticket"
-        );
-        require(
-            ticketsValidity[_event_id][_ticket_id].status ==
-                TicketStatus.saleable,
-            "Ticket consumed"
-        );
-        require(
-            ticketsValidity[_event_id][_ticket_id].owner == msg.sender,
-            "You are not owner on ticket"
-        );
+        if (ticketsValidity[_event_id][_ticket_id].price <= 0)
+            revert("Ticket not exist");
+        if (ScErc1155.balanceOf(msg.sender, _event_id) <= 0)
+            revert("You dont have a ticket");
+        if (
+            ticketsValidity[_event_id][_ticket_id].status !=
+            TicketStatus.saleable
+        ) revert("Ticket consumed");
+        if (ticketsValidity[_event_id][_ticket_id].owner != msg.sender)
+            revert("You are not owner on ticket");
+
         ticketsValidity[_event_id][_ticket_id].status = TicketStatus.consumed;
 
         emit TicketConsumed(_event_id, _ticket_id, msg.sender);
@@ -224,19 +217,13 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
         uint _event_id,
         uint _ticket_id
     ) external {
-        require(
-            ticketsValidity[_event_id][_ticket_id].price > 0,
-            "Ticket not exist"
-        );
+        if (ticketsValidity[_event_id][_ticket_id].price <= 0)
+            revert("Ticket not exist");
+        if (ScErc1155.balanceOf(msg.sender, _event_id) <= 0)
+            revert("You dont have a ticket");
+        if (ticketsValidity[_event_id][_ticket_id].owner != msg.sender)
+            revert("You are not owner on ticket");
 
-        require(
-            ScErc1155.balanceOf(msg.sender, _event_id) > 0,
-            "You dont have a ticket"
-        );
-        require(
-            ticketsValidity[_event_id][_ticket_id].owner == msg.sender,
-            "You are not owner on ticket"
-        );
         ScErc1155.safeTransferFrom(
             address(msg.sender),
             _addr,
@@ -255,6 +242,11 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
                 break;
             }
         }
+
+        // ticketsUser[msg.sender][_event_id][_ticket_id] = ticketsUser[
+        //     msg.sender
+        // ][_event_id][ticketsUser[msg.sender][_event_id].length - 1];
+        // ticketsUser[msg.sender][_event_id].pop();
 
         ticketsValidity[_event_id][_ticket_id].owner = _addr;
         ticketsUser[_addr][_event_id].push(_ticket_id);
