@@ -22,7 +22,7 @@ export const { chains, publicClient } = configureChains(
     [mainnet, sepolia, polygon, polygonMumbai, hardhat],
     [
         publicProvider(),
-        // infuraProvider({ apiKey: `${process.env.NEXT_PUBLIC_INFURA_PROJECT_ID}` })
+        infuraProvider({ apiKey: `${process.env.NEXT_PUBLIC_INFURA_PROJECT_ID}` })
     ]
 );
 const { wallets } = getDefaultWallets({

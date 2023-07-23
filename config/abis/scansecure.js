@@ -1,7 +1,8 @@
-// sepolia: 0x68231F68F245dCaB95FEAdf525d742067640DFA0
-// mumbai: 0xE3c4F2243B500a321dE2e4cdF35DF8fcCF96D288
+// sepolia: 0x9DA417b70C2aB41e747Cd68BC13a8859fa7C7a67
+// 0x68231F68F245dCaB95FEAdf525d742067640DFA0
+// mumbai: 0xB2A2A0727EfdD1F39a52ce5cFD68FA6f261CB6Ad
 // local: 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
-const address = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
+const address = "0x9DA417b70C2aB41e747Cd68BC13a8859fa7C7a67"
 
 const abi = [
     {
@@ -534,6 +535,30 @@ const abi = [
                 "internalType": "struct ScanSecureLibStorage.Ticket",
                 "name": "",
                 "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_event_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "_addr",
+                "type": "address"
+            }
+        ],
+        "name": "getTickets",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "",
+                "type": "uint256[]"
             }
         ],
         "stateMutability": "view",

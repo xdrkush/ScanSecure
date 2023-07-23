@@ -16,9 +16,9 @@ const LinkItemsMain = [
     { name: "Home", path: "/", icon: FiHome },
     { name: "MyProfile", path: "/profile", icon: FiCompass },
     { name: "MyTickets", path: "/profile/ticket", icon: FiTrendingUp },
-    { name: "MyEvent", path: "/profile/event", icon: CalendarIcon }
 ]
 const LinkItemsCreator = [
+    { name: "MyEvent", path: "/profile/event", icon: CalendarIcon },
     { name: "Creator", path: "/profile/creator", icon: CheckCircleIcon },
 ]
 
