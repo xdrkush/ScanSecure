@@ -20,6 +20,10 @@ const SizeContract = async (_name) => {
   console.log('SizeContract', deploySize, initSize)
 }
 
+const makeJson = () => {
+
+}
+
 async function main() {
   // Deploy ScanSecure
 
@@ -30,6 +34,8 @@ async function main() {
     `TetherToken deployed to ${tetherToken.address}`
   );
 
+  console.log('test1', tetherToken)
+
   const ScanSecureERC1155 = await hre.ethers.getContractFactory("ScanSecureERC1155");
   const scanSecureERC1155 = await ScanSecureERC1155.deploy("ipfs://monsuperurl.io/");
   await scanSecureERC1155.deployed();
@@ -37,12 +43,16 @@ async function main() {
     `ScanSecureERC1155 deployed to ${scanSecureERC1155.address}`
   );
 
+  // console.log('test1')
+
   const ScanSecure = await hre.ethers.getContractFactory("ScanSecure");
   const scanSecure = await ScanSecure.deploy(tetherToken.address, scanSecureERC1155.address);
   await scanSecure.deployed();
   console.log(
     `ScanSecure deployed to ${scanSecure.address}`
   );
+
+  // console.log('test1')
   
   SizeContract("ScanSecure")
 }

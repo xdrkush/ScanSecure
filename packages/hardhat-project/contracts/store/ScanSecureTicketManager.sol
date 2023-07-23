@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.19;
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 // Contract
 import "../access/ScanSecureAccess.sol";
 import "./ScanSecureERC1155.sol";

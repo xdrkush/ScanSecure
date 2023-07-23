@@ -1,6 +1,7 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("dotenv").config()
 // require('@openzeppelin/hardhat-upgrades');
+require('hardhat-docgen');
 
 const { INFURA_API_KEY, ETH_PRIVATE_KEY } = process.env
 
@@ -23,6 +24,10 @@ module.exports = {
     },
     goerli: {
       url: `https://goerli.infura.io/v3/${INFURA_API_KEY}`,
+      accounts: [`${ETH_PRIVATE_KEY}`]
+    },
+    mumbai: {
+      url: `https://polygon-mumbai.infura.io/v3/${INFURA_API_KEY}`,
       accounts: [`${ETH_PRIVATE_KEY}`]
     }
   },
