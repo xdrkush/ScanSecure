@@ -7,6 +7,7 @@ import { BuyTicket } from '../../components/ticket/BuyTicket'
 import { useAccount } from 'wagmi';
 import { CreateTickets } from '../../components/ticket/CreateTickets';
 import { SetStatusEvent } from '../../components/event/SetStatusEvent';
+import { MyTickets } from '../../components/ticket/MyTickets';
 
 export default function EventID() {
   const { address } = useAccount()
@@ -45,6 +46,9 @@ export default function EventID() {
 
       </Flex>
 
+      <Grid py={3} minH={"20vh"}>
+        <MyTickets eventId={eventId} />
+      </Grid>
 
       {event && address === event.author && (
         <Flex pt="5">

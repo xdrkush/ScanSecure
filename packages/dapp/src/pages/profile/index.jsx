@@ -18,11 +18,9 @@ export default function Profile() {
     return (
         <ProfileLayout>
             <Heading size="md">My Profile</Heading>
-            {!isWhitelisted && (
-                <Grid py={3} minH={"20vh"}>
-                    <AskCertification />
-                </Grid>
-            )}
+            <Grid py={3} minH={"20vh"}>
+                <AskCertification />
+            </Grid>
             <Grid py={3} minH={"20vh"}>
                 <BuyTicket />
             </Grid>

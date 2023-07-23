@@ -6,18 +6,9 @@ import { createArrayByLength } from "../../utils"
 import { useAccount } from "wagmi"
 
 
-const CardEvent = ({ el }) => {
-    const { eventLastId, getEvent } = useContext(ScanSecureContext)
-    const [event, setEvent] = useState()
-    const { id, buyer, eventId } = el
-
-    // useEffect(() => {
-    //     if (!(id >= 0) && !(id < eventLastId)) return;
-    //     const init = async () => {
-    //         setEvent(await getEvent(id))
-    //     }
-    //     init()
-    // }, [id])
+const CardTicket = ({ el }) => {
+    const { id, status, eventId } = el
+    const { consumeTicket } = useContext(ScanSecureContext)
 
     return (
         <Card>
@@ -25,44 +16,47 @@ const CardEvent = ({ el }) => {
                 <Heading size='md'> #{String(id)}</Heading>
             </CardHeader>
             <CardBody>
-                <Text> {eventId}</Text>
+                <Text> {Number(status) === 0 ? "available" : "already consumed"}</Text>
+                <Text> event: {String(eventId)}</Text>
             </CardBody>
-            <CardFooter>
-                <Link href={`/event/${id}`}>
-                    <Button>+ info</Button>
-                </Link>
-            </CardFooter>
+            {Number(status) < 1 && (
+                <CardFooter>
+                    <Button onClick={() => consumeTicket(eventId, id)}>Consume</Button>
+                </CardFooter>
+            )}
         </Card>
     )
 }
-
-export const MyTickets = () => {
-    const { eventLastId, ticketOwneredLogs } = useContext(ScanSecureContext)
+// Non fonctionel
+export const MyTickets = ({ eventId }) => {
+    const { getTickets, getTicket, eventLastId } = useContext(ScanSecureContext)
     const { address } = useAccount()
     const [tickets, setTickets] = useState([])
 
     useEffect(() => {
-        if (!ticketOwneredLogs) return
+        if (eventId < 0 || eventId >= eventLastId) return
         const init = async () => {
-            ticketOwneredLogs.map((el, i) => {
-                if (address === el.buyer) {
-                    console.log('el', el)
-                    setTickets((tickets) => [...tickets, el])
-                }
-            })
+            const result = await getTickets(eventId, address)
+
+            if (result) {
+                result.map(async (el) => {
+                    const t = await getTicket(eventId, Number(el))
+                    setTickets(tickets => [...tickets, { ...t, id: Number(el), eventId }])
+                })
+                console.log('getTickets', result, eventId, tickets)
+            } else setTickets([])
         }
         init()
 
-        console.log('tickets', tickets)
-    }, [ticketOwneredLogs])
+    }, [eventId, address])
 
     return (
-        <Box p={5} border='1px' borderColor='accent.500' borderRadius="25">
-            <Heading size="md">ListEvent: (total = {String(eventLastId)}):</Heading>
+        <Box p={5} mt={5} border='1px' borderColor='accent.500' borderRadius="25">
+            <Heading size="md">MyTickets (event: {String(eventId)}): (total = {tickets && String(tickets.length)}):</Heading>
 
             <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(200px, 1fr))'>
                 {tickets.length > 0 && tickets.map((el, i) => (
-                    <CardEvent key={el.id} el={el} />
+                    <CardTicket key={el.id} el={el} />
                 ))}
             </SimpleGrid>
         </Box>

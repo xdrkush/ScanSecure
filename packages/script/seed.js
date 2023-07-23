@@ -51,7 +51,9 @@ const funding = async () => {
     } catch (error) {
         console.log(error.message)
     }
+}
 
+const balanceOfUSDT = async () => {
     // BalanceOf
     try {
         const data = await client.readContract({
@@ -395,8 +397,6 @@ const buyTicket = async () => {
     } catch (error) {
         console.log(error.message)
     }
-
-
 }
 const offerTicket = async () => {
     // SetApproval No Creator -> offer & consume
@@ -559,22 +559,62 @@ const getters = async () => {
         console.log(error.message)
     }
 
+
+    // GetTickets
+    try {
+        const data = await client.readContract({
+            abi: config.contracts.scanSecure.abi,
+            address: config.contracts.scanSecure.address,
+            functionName: 'getTickets',
+            account: fourth,
+            args: [0, fourth.address]
+        })
+        console.log('GetTickets 0', data)
+    } catch (error) {
+        console.log(error.message)
+    }
+    try {
+        const data = await client.readContract({
+            abi: config.contracts.scanSecure.abi,
+            address: config.contracts.scanSecure.address,
+            functionName: 'getTickets',
+            account: fourth,
+            args: [3, fourth.address]
+        })
+        console.log('GetTickets 3', data)
+    } catch (error) {
+        console.log(error.message)
+    }
+
+    try {
+        const data = await client.readContract({
+            abi: config.contracts.scanSecure.abi,
+            address: config.contracts.scanSecure.address,
+            functionName: 'totalMembers'
+        })
+        console.log('GetTickets 3', data)
+    } catch (error) {
+        console.log(error.message)
+    }
+
+
 }
 
 async function init() {
     console.log('init -> Seed')
-    await funding()
-    await register()
-    await askCertification()
-    await answerCertification()
-    await createEvent()
-    await createTicket()
-    await setStatusEvent()
-    await buyTicket()
-    await offerTicket()
-    await consumeTicket()
-    await sumRecovery()
-    await getters()
+    // await funding()
+    // await balanceOfUSDT()
+    // await register()
+    // await askCertification()
+    // await answerCertification()
+    // await createEvent()
+    // await createTicket()
+    // await setStatusEvent()
+    // await buyTicket()
+    // await offerTicket()
+    // await consumeTicket()
+    // await sumRecovery()
+    // await getters()
 
 }
 

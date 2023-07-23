@@ -19,17 +19,17 @@ const CardEvent = ({ id }) => {
 
     return (
         <Card>
-            <CardHeader>
-                <Heading size='md'> #{String(id)}</Heading>
-            </CardHeader>
-            <CardBody>
-                <Text> {event && event.title}</Text>
-            </CardBody>
-            <CardFooter>
-                <Link href={`/event/${id}`}>
+            <Link href={`/event/${id}`}>
+                <CardHeader>
+                    <Heading size='md'> #{String(id)}</Heading>
+                </CardHeader>
+                <CardBody>
+                    <Text> {event && event.title}</Text>
+                </CardBody>
+                <CardFooter>
                     <Button>+ info</Button>
-                </Link>
-            </CardFooter>
+                </CardFooter>
+            </Link>
         </Card>
     )
 }

@@ -33,6 +33,7 @@ abstract contract ScanSecureStorage is ScanSecureLibStorage {
     Event[] events;
     mapping(address => User) members;
     mapping(uint => mapping(uint => Ticket)) ticketsValidity;
+    mapping(address => mapping(uint => uint[])) ticketsUser;
     uint public eventLastId;
     uint public totalMembers;
 }

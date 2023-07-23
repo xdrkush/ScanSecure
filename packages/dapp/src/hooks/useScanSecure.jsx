@@ -8,8 +8,6 @@ import { useNotif } from './useNotif';
 import { config, client } from "../config"
 import { confetti, MEMBER_ROLE, CREATOR_ROLE, ADMIN_ROLE } from '../utils';
 
-const initContract = process.env.NEXT_PUBLIC_CLIENT_CHAIN === "HARDHAT" ? 0n : 3931113n
-
 export function useScanSecure() {
     const { isConnected, address } = useAccount()
     const { chain } = useNetwork()
@@ -206,7 +204,7 @@ export function useScanSecure() {
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'register',
-                args: [_pseudo]
+                args: [String(_pseudo)]
             })
             await transactionsCompleted(request)
             await checkRoles()
@@ -381,6 +379,19 @@ export function useScanSecure() {
             setNotif({ type: "error", message: String(error) })
         }
     }
+    const getTickets = async (_event_id, _addr) => {
+        try {
+            const data = await readContract({
+                address: config.contracts.scanSecure.address,
+                abi: config.contracts.scanSecure.abi,
+                functionName: 'getTickets',
+                args: [_event_id, _addr]
+            })
+            return data
+        } catch (error) {
+            setNotif({ type: "error", message: String(error) })
+        }
+    }
     const getEventLastId = async () => {
         try {
             const data = await readContract({
@@ -388,7 +399,7 @@ export function useScanSecure() {
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'eventLastId',
             })
-            
+
             setEventLastId(Number(data))
         } catch (error) {
             setNotif({ type: "error", message: String(error) })
@@ -401,7 +412,7 @@ export function useScanSecure() {
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'totalMembers',
             })
-            
+
             setTotalMembers(Number(data))
         } catch (error) {
             setNotif({ type: "error", message: String(error) })
@@ -416,8 +427,6 @@ export function useScanSecure() {
         abi: config.contracts.scanSecure.abi,
         eventName: 'Whitelisted',
         listener(log) {
-            console.log('wevent1', address, String(log[0].args.addr))
-            console.log('wevent2', whitelist, String(address) === String(log[0].args.addr))
             if (String(address) === String(log[0].args.addr)) {
                 checkRoles()
                 setNotif({ type: 'info', message: 'Vous êtes Whitelisted' })
@@ -429,190 +438,233 @@ export function useScanSecure() {
      * Event logs
      * ************** */
     const getWhitelisted = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
+        try {
 
-        const logs = await client.getLogs({
-            address: getAddress(config.contracts.scanSecure.address),
-            event: parseAbiItem(
-                "event Whitelisted(address indexed addr)"
-            ),
-            fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
-        });
-        console.log('getWhitelisted', logs)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
 
-        const arr = (await Promise.all(logs.map(async (log, i) => {
-            return { id: Number(i + 1), address: String(log.args.addr) };
-        }))).map(w => w)
+            const logs = await client.getLogs({
+                address: getAddress(config.contracts.scanSecure.address),
+                event: parseAbiItem(
+                    "event Whitelisted(address indexed addr)"
+                ),
+                fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
+            });
+            console.log('getWhitelisted', logs)
 
-        setWhitelist(arr)
+            const arr = (await Promise.all(logs.map(async (log, i) => {
+                return { id: Number(i + 1), address: String(log.args.addr) };
+            }))).map(w => w)
+
+            setWhitelist(arr)
+        } catch (error) {
+            setNotif({ type: "error", message: String(error) })
+        }
 
     }
     const getAskCertification = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
+        try {
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
 
-        const logs = await client.getLogs({
-            address: getAddress(config.contracts.scanSecure.address),
-            event: parseAbiItem(
-                "event AskCertification(address indexed addr, string message)"
-            ),
-            fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
-        });
+            const logs = await client.getLogs({
+                address: getAddress(config.contracts.scanSecure.address),
+                event: parseAbiItem(
+                    "event AskCertification(address indexed addr, string message)"
+                ),
+                fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
+            });
 
-        const arr = (await Promise.all(logs.map(async (log, i) => {
-            return { id: Number(i + 1), address: String(log.args.addr), message: String(log.args.message) };
-        }))).map(w => w)
+            const arr = (await Promise.all(logs.map(async (log, i) => {
+                return { id: Number(i + 1), address: String(log.args.addr), message: String(log.args.message) };
+            }))).map(w => w)
 
-        console.log('log askCertification', arr)
+            console.log('log askCertification', arr)
 
-        setAskCertificationLogs(arr)
+            setAskCertificationLogs(arr)
+        } catch (error) {
+            setNotif({ type: "error", message: String(error) })
+        }
     }
     const getCertified = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
+        try {
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
 
-        const logs = await client.getLogs({
-            address: getAddress(config.contracts.scanSecure.address),
-            event: parseAbiItem(
-                "event Certified(address indexed addr, uint indexed newStatus)"
-            ),
-            fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
-        });
+            const logs = await client.getLogs({
+                address: getAddress(config.contracts.scanSecure.address),
+                event: parseAbiItem(
+                    "event Certified(address indexed addr, uint indexed newStatus)"
+                ),
+                fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
+            });
 
-        const arr = (await Promise.all(logs.map(async (log, i) => {
-            return { id: Number(i + 1), address: String(log.args.addr), newStatus: String(log.args.newStatus) };
-        }))).map(w => w)
+            const arr = (await Promise.all(logs.map(async (log, i) => {
+                return { id: Number(i + 1), address: String(log.args.addr), newStatus: String(log.args.newStatus) };
+            }))).map(w => w)
 
-        console.log('log certified', arr)
+            console.log('log certified', arr)
 
-        setCertifiedLogs(arr)
+            setCertifiedLogs(arr)
+        } catch (error) {
+            setNotif({ type: "error", message: String(error) })
+        }
     }
     const getEventCreated = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
+        try {
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
 
-        const logs = await client.getLogs({
-            address: getAddress(config.contracts.scanSecure.address),
-            event: parseAbiItem(
-                "event EventCreated(uint indexed event_id, address indexed author)"
-            ),
-            fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
-        });
+            const logs = await client.getLogs({
+                address: getAddress(config.contracts.scanSecure.address),
+                event: parseAbiItem(
+                    "event EventCreated(uint indexed event_id, address indexed author)"
+                ),
+                fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
+            });
 
-        const arr = (await Promise.all(logs.map(async (log, i) => {
-            return { id: Number(i + 1), eventId: String(log.args.event_id), address: String(log.args.author) };
-        }))).map(w => w)
+            const arr = (await Promise.all(logs.map(async (log, i) => {
+                return { id: Number(i + 1), eventId: String(log.args.event_id), address: String(log.args.author) };
+            }))).map(w => w)
 
-        console.log('log eventCreatedLogs', arr)
+            console.log('log eventCreatedLogs', arr)
 
-        setEventCreatedLogs(arr)
+            setEventCreatedLogs(arr)
+
+        } catch (error) {
+            setNotif({ type: "error", message: String(error) })
+        }
     }
     const getEventStatusChanged = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
+        try {
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
 
-        const logs = await client.getLogs({
-            address: getAddress(config.contracts.scanSecure.address),
-            event: parseAbiItem(
-                "event EventStatusChanged(uint indexed event_id, uint8 oldStatus, uint8 newStatus)"
-            ),
-            fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
-        });
+            const logs = await client.getLogs({
+                address: getAddress(config.contracts.scanSecure.address),
+                event: parseAbiItem(
+                    "event EventStatusChanged(uint indexed event_id, uint8 oldStatus, uint8 newStatus)"
+                ),
+                fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
+            });
 
-        const ar = (await Promise.all(logs.map(async (log, i) => {
-            return { id: Number(i + 1), eventId: String(log.args.event_id), oldStatus: String(log.args.oldStatus), newStatus: String(log.args.newStatus) };
-        }))).map(w => w)
+            const ar = (await Promise.all(logs.map(async (log, i) => {
+                return { id: Number(i + 1), eventId: String(log.args.event_id), oldStatus: String(log.args.oldStatus), newStatus: String(log.args.newStatus) };
+            }))).map(w => w)
 
-        console.log('log eventStatusChanged', ar)
+            console.log('log eventStatusChanged', ar)
 
-        setEventStatusChangedLogs(ar)
+            setEventStatusChangedLogs(ar)
+
+        } catch (error) {
+            setNotif({ type: "error", message: String(error) })
+        }
     }
     const getNewTickets = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
+        try {
 
-        const logs = await client.getLogs({
-            address: getAddress(config.contracts.scanSecure.address),
-            event: parseAbiItem(
-                "event NewTickets(uint indexed event_id, uint indexed quantity, address indexed author)"
-            ),
-            fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
-        });
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
 
-        const arr = (await Promise.all(logs.map(async (log, i) => {
-            return { id: Number(i + 1), eventId: String(log.args.event_id), quantity: String(log.args.quantity), author: String(log.args.author) };
-        }))).map(w => w)
+            const logs = await client.getLogs({
+                address: getAddress(config.contracts.scanSecure.address),
+                event: parseAbiItem(
+                    "event NewTickets(uint indexed event_id, uint indexed quantity, address indexed author)"
+                ),
+                fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
+            });
 
-        console.log('log newTickets', arr)
+            const arr = (await Promise.all(logs.map(async (log, i) => {
+                return { id: Number(i + 1), eventId: String(log.args.event_id), quantity: String(log.args.quantity), author: String(log.args.author) };
+            }))).map(w => w)
 
-        setNewTicketsLogs(arr)
+            console.log('log newTickets', arr)
+
+            setNewTicketsLogs(arr)
+        } catch (error) {
+            setNotif({ type: "error", message: String(error) })
+        }
     }
     const getTicketOwnered = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
+        try {
 
-        const logs = await client.getLogs({
-            address: getAddress(config.contracts.scanSecure.address),
-            event: parseAbiItem(
-                "event TicketOwnered(uint indexed event_id, uint indexed quantity, address indexed buyer)"
-            ),
-            fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
-        });
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
 
-        const arr = (await Promise.all(logs.map(async (log, i) => {
-            return { id: Number(i + 1), eventId: String(log.args.event_id), quantity: String(log.args.quantity), buyer: String(log.args.buyer) };
-        }))).map(w => w)
+            const logs = await client.getLogs({
+                address: getAddress(config.contracts.scanSecure.address),
+                event: parseAbiItem(
+                    "event TicketOwnered(uint indexed event_id, uint indexed quantity, address indexed buyer)"
+                ),
+                fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
+            });
 
-        console.log('log ticketOwnered', arr)
+            const arr = (await Promise.all(logs.map(async (log, i) => {
+                return { id: Number(i + 1), eventId: String(log.args.event_id), quantity: String(log.args.quantity), buyer: String(log.args.buyer) };
+            }))).map(w => w)
 
-        setTicketOwneredLogs(arr)
+            console.log('log ticketOwnered', arr)
+
+            setTicketOwneredLogs(arr)
+        } catch (error) {
+            setNotif({ type: "error", message: String(error) })
+        }
     }
     const getTicketConsumed = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
+        try {
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
 
-        const logs = await client.getLogs({
-            address: getAddress(config.contracts.scanSecure.address),
-            event: parseAbiItem(
-                "event TicketConsumed(uint indexed event_id, uint indexed ticket_id, address indexed consumer)"
-            ),
-            fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
-        });
+            const logs = await client.getLogs({
+                address: getAddress(config.contracts.scanSecure.address),
+                event: parseAbiItem(
+                    "event TicketConsumed(uint indexed event_id, uint indexed ticket_id, address indexed consumer)"
+                ),
+                fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
+            });
 
-        const arr = (await Promise.all(logs.map(async (log, i) => {
-            return { id: Number(i + 1), eventId: String(log.args.event_id), ticketId: String(log.args.ticket_id), consumer: Number(log.args.consumer) };
-        }))).map(w => w)
+            const arr = (await Promise.all(logs.map(async (log, i) => {
+                return { id: Number(i + 1), eventId: String(log.args.event_id), ticketId: String(log.args.ticket_id), consumer: Number(log.args.consumer) };
+            }))).map(w => w)
 
-        console.log('log ticket consumed', arr)
+            console.log('log ticket consumed', arr)
 
-        setTicketConsumedLogs(arr)
+            setTicketConsumedLogs(arr)
+
+        } catch (error) {
+            setNotif({ type: "error", message: String(error) })
+        }
     }
     const getRecoverySum = async () => {
-        const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
+        try {
 
-        const logs = await client.getLogs({
-            address: getAddress(config.contracts.scanSecure.address),
-            event: parseAbiItem(
-                "event SumRecovered(uint sum, address indexed collector)"
-            ),
-            fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
-        });
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
 
-        const arr = (await Promise.all(logs.map(async (log, i) => {
-            return { id: Number(i + 1), sum: String(log.args.sum), collector: String(log.args.collector) };
-        }))).map(w => w)
+            const logs = await client.getLogs({
+                address: getAddress(config.contracts.scanSecure.address),
+                event: parseAbiItem(
+                    "event SumRecovered(uint sum, address indexed collector)"
+                ),
+                fromBlock: Number(fromBlock) >= 0 ? fromBlock : BigInt(0),
+            });
 
-        console.log('log recoverysum', arr)
+            const arr = (await Promise.all(logs.map(async (log, i) => {
+                return { id: Number(i + 1), sum: String(log.args.sum), collector: String(log.args.collector) };
+            }))).map(w => w)
 
-        setSumRecoveredLogs(arr)
+            console.log('log recoverysum', arr)
+
+            setSumRecoveredLogs(arr)
+        } catch (error) {
+            setNotif({ type: "error", message: String(error) })
+        }
     }
 
     useEffect(() => {
         if (!contractIsConnected || !scanSecureSC) return;
-        getWhitelisted()
-        getAskCertification()
-        getCertified()
-        getEventCreated()
-        getEventStatusChanged()
-        getNewTickets()
-        getTicketOwnered()
-        getTicketConsumed()
-        getRecoverySum()
-        getEventLastId()
-        getTotalMembers()
+        // getWhitelisted()
+        // getAskCertification()
+        // getCertified()
+        // getEventCreated()
+        // getEventStatusChanged()
+        // getNewTickets()
+        // getTicketOwnered()
+        // getTicketConsumed()
+        // getRecoverySum()
+        // getEventLastId()
+        // getTotalMembers()
         // loadMoreWhitelisted()
     }, [scanSecureSC, contractIsConnected])
 
@@ -629,7 +681,7 @@ export function useScanSecure() {
         // Tickets
         createTickets, buyTicket, offerTicket, consumeTicket,
         // Getters
-        getUser, getEvent, getTicket,
+        getUser, getEvent, getTicket, getTickets,
         // Data
         eventLastId, totalMembers,
         profile, whitelist, askCertificationLogs, certifiedLogs,

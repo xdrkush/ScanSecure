@@ -411,6 +411,13 @@ describe("ScanSecure", function () {
           expect(Number(await scanSecureERC1155.balanceOf(addr2.address, 1))).to.equal(10)
 
         });
+        it("GetTickets : Should rigth get tickets", async function () {
+          const { scanSecure, addr2 } = await loadFixture(deployContextBuyTickets);
+          // Tickets buyed
+          const tickets = await scanSecure.connect(addr2).getTickets(1, addr2.address)
+          expect(tickets.length).to.equal(10)
+
+        });
         it("GetTicket : Should error ticket not exist", async function () {
           const { scanSecure, addr2 } = await loadFixture(deployContextBuyTickets);
           await expect(scanSecure.connect(addr2).getTicket(1, 5000))

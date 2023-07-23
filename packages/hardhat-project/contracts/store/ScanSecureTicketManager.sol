@@ -50,6 +50,20 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
     }
 
     /**
+     * @dev Retrieves the ids of event with owner _addr.
+     * @param _event_id The identifier of the event.
+     * @param _addr The address of the members.
+     * @return The uint[] of Ticket id of event for user, owner.
+     * @notice The ticket must exist in the ticketsValidity mapping.
+     */
+    function getTickets(
+        uint _event_id,
+        address _addr
+    ) external view returns (uint[] memory) {
+        return ticketsUser[_addr][_event_id];
+    }
+
+    /**
      * @dev Allows a creator to create tickets for an event.
      * @param _event_id The identifier of the event to create tickets for.
      * @param _quantity The quantity of tickets to create.
@@ -145,6 +159,9 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
                 msg.sender,
                 TicketStatus.saleable
             );
+            ticketsUser[msg.sender][_event_id].push(
+                events[_event_id].totalSold + (i + 1)
+            );
         }
 
         emit TicketOwnered(_event_id, _quantity, msg.sender);
@@ -188,7 +205,7 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
     }
 
     /**
-     * @dev Allows a ticket owner to offer a ticket to another address.
+     * @dev Allows the owner of a ticket to offer it to another address.
      * @param _addr The address to offer the ticket to.
      * @param _event_id The identifier of the event.
      * @param _ticket_id The identifier of the ticket to offer.
@@ -214,7 +231,25 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
             1,
             ""
         );
+
+        uint[] storage senderTickets = ticketsUser[msg.sender][_event_id];
+        for (uint i = 0; i < senderTickets.length; i++) {
+            if (senderTickets[i] == _ticket_id) {
+                // Move the last element to the position of the ticket to be removed
+                senderTickets[i] = senderTickets[senderTickets.length - 1];
+                // Remove the last element (which is now a duplicate)
+                senderTickets.pop();
+                break;
+            }
+        }
+
+        // ticketsUser[msg.sender][_event_id][_ticket_id] = ticketsUser[
+        //     msg.sender
+        // ][_event_id][ticketsUser[msg.sender][_event_id].length - 1];
+        // ticketsUser[msg.sender][_event_id].pop();
+
         ticketsValidity[_event_id][_ticket_id].owner = _addr;
+        ticketsUser[_addr][_event_id].push(_ticket_id);
 
         emit TicketOwnered(_event_id, 1, _addr);
     }
