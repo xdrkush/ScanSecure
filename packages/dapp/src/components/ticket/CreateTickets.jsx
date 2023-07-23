@@ -1,8 +1,8 @@
 import { Box, Button, FormControl, FormLabel, Heading, Input, InputGroup } from "@chakra-ui/react"
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { ScanSecureContext } from "../../contexts"
 
-export const CreateTickets = () => {
+export const CreateTickets = ({ eventId }) => {
     const { createTickets } = useContext(ScanSecureContext)
     const [event_id, setEventId] = useState(null)
     const [quantity, setQuantity] = useState(0)
@@ -12,19 +12,26 @@ export const CreateTickets = () => {
     const checkQuantity = () => quantity > 0
     const checkPrice = () => price > 0
 
+    useEffect(() => {
+        if (!eventId) return
+        setEventId(eventId)
+    }, [eventId])
+
     return (
         <Box p={5} border='1px' borderColor='accent.500' borderRadius="25">
             <Heading size="md">CreateTicket:</Heading>
             <Box px="2">
                 <InputGroup w="100%">
-                    <FormControl id="EventId">
-                        <FormLabel>EventId</FormLabel>
-                        <Input
-                            type="number"
-                            focusBorderColor={event_id >= 0 ? "green.500" : "red.500"}
-                            onChange={(e) => setEventId(e.target.value)}
-                        />
-                    </FormControl>
+                    {!eventId && (
+                        <FormControl id="EventId">
+                            <FormLabel>EventId</FormLabel>
+                            <Input
+                                type="number"
+                                focusBorderColor={event_id >= 0 ? "green.500" : "red.500"}
+                                onChange={(e) => setEventId(e.target.value)}
+                            />
+                        </FormControl>
+                    )}
                     <FormControl id="Quantity">
                         <FormLabel>quantity</FormLabel>
                         <Input

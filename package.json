@@ -6,6 +6,7 @@
   "author": "xdrkush <drkushikush@gmail.com>",
   "license": "MIT",
   "private": true,
+  "type": "module",
   "workspaces": [
     "packages/*"
   ],

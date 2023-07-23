@@ -28,8 +28,6 @@ async function main() {
     `TetherToken deployed to ${tetherToken.address}`
   );
 
-  console.log('test1', tetherToken)
-
   const ScanSecureERC1155 = await hre.ethers.getContractFactory("ScanSecureERC1155");
   const scanSecureERC1155 = await ScanSecureERC1155.deploy("ipfs://monsuperurl.io/");
   await scanSecureERC1155.deployed();

@@ -4,9 +4,9 @@ import { mainnet, sepolia, hardhat, polygon, polygonMumbai } from "wagmi/chains"
 import { publicProvider } from "wagmi/providers/public";
 import { infuraProvider } from '@wagmi/core/providers/infura'
 import { createPublicClient, http } from "viem";
-import scansecure from "./abis/scansecure";
-import scansecureERC1155 from "./abis/scansecureERC1155";
-import tethertoken from "./abis/tethertoken";
+import scansecure from "../../../../config/abis/scansecure.js";
+import scansecureERC1155 from "../../../../config/abis/scansecureERC1155.js";
+import tethertoken from "../../../../config/abis/tethertoken.js";
 
 import {
     ledgerWallet,
