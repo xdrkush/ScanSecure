@@ -2,9 +2,9 @@ import { mainnet, sepolia, hardhat, polygonMumbai } from "wagmi/chains";
 import { createWalletClient, http, publicActions } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 // Import contract
-import scansecure from "./abis/scansecure.js";
-import scansecureERC1155 from "./abis/scansecureERC1155.js";
-import tethertoken from "./abis/tethertoken.js";
+import scansecure from "../../../config/abis/scansecure.js";
+import scansecureERC1155 from "../../../config/abis/scansecureERC1155.js";
+import tethertoken from "../../../config/abis/tethertoken.js";
 import dotenv from "dotenv"
 dotenv.config()
 

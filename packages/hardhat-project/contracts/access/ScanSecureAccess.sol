@@ -26,11 +26,9 @@ contract ScanSecureAccess is AccessControl, ScanSecureStorage {
      * An event is emitted to indicate that the user has been whitelisted.
      */
     function register(string calldata _pseudo) external {
-        require(bytes(_pseudo).length > 0, "The pseudo is empty");
-        require(
-            !hasRole(MEMBER_ROLE, msg.sender),
-            "You are already registred on member"
-        );
+        if (bytes(_pseudo).length <= 0) revert("The pseudo is empty");
+        if (hasRole(MEMBER_ROLE, msg.sender))
+            revert("You are already registred on member");
 
         members[msg.sender] = User(_pseudo, CertificationStatus.noAsked);
         _grantRole(MEMBER_ROLE, msg.sender);
@@ -49,15 +47,11 @@ contract ScanSecureAccess is AccessControl, ScanSecureStorage {
     function askCertification(
         string calldata _message
     ) external onlyRole(MEMBER_ROLE) {
-        require(bytes(_message).length > 0, "Your message is empty");
-        require(
-            uint(members[msg.sender].status) == 0,
-            "You are already ask certification"
-        );
-        require(
-            !hasRole(CREATOR_ROLE, msg.sender),
-            "You are already registred creator"
-        );
+        if (bytes(_message).length <= 0) revert("Your message is empty");
+        if (uint(members[msg.sender].status) != 0)
+            revert("You are already ask certification");
+        if (hasRole(CREATOR_ROLE, msg.sender))
+            revert("You are already registred creator");
         CertificationStatus status = CertificationStatus.pending;
 
         members[msg.sender].status = status;
@@ -78,10 +72,7 @@ contract ScanSecureAccess is AccessControl, ScanSecureStorage {
         bool _choose,
         address _asker
     ) external onlyRole(ADMIN_ROLE) {
-        require(
-            members[_asker].status == CertificationStatus.pending,
-            "The user are not status asker"
-        );
+        if (members[_asker].status != CertificationStatus.pending) revert("The user are not status asker");
         if (!_choose) {
             CertificationStatus status = CertificationStatus.noAsked;
 
@@ -104,7 +95,7 @@ contract ScanSecureAccess is AccessControl, ScanSecureStorage {
      */
     function getUser(address _addr) external view returns (User memory) {
         User memory user = members[_addr];
-        require(bytes(user.pseudo).length > 0, "User not exist");
+        if (bytes(user.pseudo).length <= 0) revert("User not exist");
         return user;
     }
 }

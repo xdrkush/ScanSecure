@@ -614,12 +614,12 @@ describe("ScanSecure", function () {
           await expect(scanSecure.connect(addr1).consumeTicket(1, 5000))
             .to.be.revertedWith(`Ticket not exist`)
         });
-        it("ConsumeTicket : Should error you have not ticket", async function () {
+        it("ConsumeTicket : Should error You dont have a ticket", async function () {
           const { scanSecure, addr4 } = await loadFixture(deployContextBuyTickets);
           await expect(scanSecure.connect(addr4).consumeTicket(1, 2))
-            .to.be.revertedWith(`You have not ticket`)
+            .to.be.revertedWith(`You dont have a ticket`)
         });
-        it("ConsumeTicket : Should error you have not ticket", async function () {
+        it("ConsumeTicket : Should error you ticket consumed", async function () {
           const { scanSecure, addr2 } = await loadFixture(deployContextBuyTickets);
           scanSecure.connect(addr2).consumeTicket(1, 2)
           await expect(scanSecure.connect(addr2).consumeTicket(1, 2))

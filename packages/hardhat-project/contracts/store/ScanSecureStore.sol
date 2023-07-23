@@ -30,7 +30,7 @@ abstract contract ScanSecureStore is ScanSecureTicketManager {
     function createEvent(
         string calldata _title
     ) external onlyRole(CREATOR_ROLE) {
-        require(bytes(_title).length > 0, "Title null is not accepted");
+        if (bytes(_title).length <= 0) revert("Title null is not accepted");
         events.push(Event(_title, 0, 0, msg.sender, EventStatus.created));
         ++eventLastId;
         emit EventCreated(eventLastId, msg.sender);
@@ -64,7 +64,8 @@ abstract contract ScanSecureStore is ScanSecureTicketManager {
      * @notice The event must exist in the list of events.
      */
     function getEvent(uint _event_id) external view returns (Event memory) {
-        require(_event_id >= 0 && _event_id < events.length, "Event not exist");
+        if (_event_id < 0 || _event_id > events.length)
+            revert("Event not exist");
         return events[_event_id];
     }
 }
