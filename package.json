@@ -2,7 +2,7 @@
   "name": "scansecure",
   "version": "1.75.0",
   "main": "index.js",
-  "repository": "git@github.com:xdrkush/starterkit-dapp-ts.git",
+  "repository": "git@github.com:xdrkush/ScanSecure.git",
   "author": "xdrkush <drkushikush@gmail.com>",
   "license": "MIT",
   "private": true,
