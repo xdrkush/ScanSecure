@@ -208,6 +208,18 @@ const answerCertification = async () => {
     } catch (error) {
         console.log(error.message)
     }
+    try {
+        const data = await client.writeContract({
+            abi: config.contracts.scanSecure.abi,
+            address: config.contracts.scanSecure.address,
+            functionName: 'certificationAnswer',
+            account: owner,
+            args: [true, fourth.address]
+        })
+        console.log('certificationAnswer user 2', data)
+    } catch (error) {
+        console.log(error.message)
+    }
 }
 const createEvent = async () => {
     // CreateEvent
@@ -629,7 +641,7 @@ async function init() {
     // await offerTicket()
     // await consumeTicket()
     // await sumRecovery()
-    await getters()
+    // await getters()
 
 }
 

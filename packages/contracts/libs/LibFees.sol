@@ -15,7 +15,7 @@ library LibFees {
      * @notice The price must be greater than zero to calculate the fees.
      */
     function calcFees(uint _price) internal pure returns (uint) {
-        if (_price <= 0) revert("Not rigth price");
+        require(_price > 0, "Not rigth price");
         uint fee = (_price * FEES_PERCENTAGE) / 100;
         return fee;
     }
