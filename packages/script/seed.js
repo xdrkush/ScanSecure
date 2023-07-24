@@ -1,6 +1,11 @@
 import { parseEther } from "viem";
 import { config, client, owner, second, third, fourth } from "./config/index.js";
 
+const ADMIN_DEFAULT_ROLE = "0x0000000000000000000000000000000000000000000000000000000000000000"
+const MEMBER_ROLE = "0x829b824e2329e205435d941c9f13baf578548505283d29261236d8e6596d4636"
+const CREATOR_ROLE = "0x828634d95e775031b9ff576b159a8509d3053581a8c9c4d7d86899e0afcd882f"
+const ADMIN_ROLE = "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775"
+
 // utils
 const calcFees = (_sumNoFees) => {
     const fee = _sumNoFees * BigInt(5) / BigInt(100);
@@ -597,7 +602,17 @@ const getters = async () => {
         console.log(error.message)
     }
 
-
+    try {
+        const data = await client.readContract({
+            abi: config.contracts.scanSecure.abi,
+            address: config.contracts.scanSecure.address,
+            functionName: 'hasRole',
+            args: [ADMIN_ROLE, owner.address]
+        })
+        console.log('GetTickets 3', data, owner.address)
+    } catch (error) {
+        console.log(error.message)
+    }
 }
 
 async function init() {
@@ -614,7 +629,7 @@ async function init() {
     // await offerTicket()
     // await consumeTicket()
     // await sumRecovery()
-    // await getters()
+    await getters()
 
 }
 

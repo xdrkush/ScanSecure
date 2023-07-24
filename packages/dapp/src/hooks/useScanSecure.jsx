@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 
 import { getWalletClient, getContract, prepareWriteContract, writeContract, readContract, waitForTransaction } from '@wagmi/core'
-import { useAccount, useContractEvent, useNetwork } from "wagmi"
+import { useAccount, useContractEvent, useNetwork, } from "wagmi"
 import { parseAbiItem, getAddress, parseEther } from 'viem'
 
 import { useNotif } from './useNotif';
@@ -9,7 +9,7 @@ import { config, client } from "../config"
 import { confetti, MEMBER_ROLE, CREATOR_ROLE, ADMIN_ROLE } from '../utils';
 
 export function useScanSecure() {
-    const { isConnected, address } = useAccount()
+    const { isConnected, account, address } = useAccount()
     const { chain } = useNetwork()
     const { setNotif } = useNotif()
 
@@ -139,14 +139,19 @@ export function useScanSecure() {
      * Utils
      * ************** */
     const transactionsCompleted = async (_request) => {
-        const { hash } = await writeContract(_request)
-        setNotif({ type: 'info', message: "Transactions Processing..." })
-        const data = await waitForTransaction({
-            hash: hash,
-        })
-        setNotif({ type: 'info', message: "Transactions effectué !" })
-        confetti(0)
-        return data
+        try {
+
+            const { hash } = await writeContract(_request)
+            setNotif({ type: 'info', message: "Transactions Processing..." })
+            const data = await waitForTransaction({
+                hash: hash,
+            })
+            setNotif({ type: 'info', message: "Transactions effectué !" })
+            confetti(0)
+            return data
+        } catch (error) {
+            setNotif({ type: "error", message: String(error) })
+        }
     }
     const setApprovalForAll = async () => {
         try {
@@ -204,6 +209,7 @@ export function useScanSecure() {
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'register',
+                account,
                 args: [String(_pseudo)]
             })
             await transactionsCompleted(request)
@@ -440,7 +446,7 @@ export function useScanSecure() {
     const getWhitelisted = async () => {
         try {
 
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
@@ -463,7 +469,7 @@ export function useScanSecure() {
     }
     const getAskCertification = async () => {
         try {
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
@@ -486,7 +492,7 @@ export function useScanSecure() {
     }
     const getCertified = async () => {
         try {
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
@@ -509,7 +515,7 @@ export function useScanSecure() {
     }
     const getEventCreated = async () => {
         try {
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
@@ -533,7 +539,7 @@ export function useScanSecure() {
     }
     const getEventStatusChanged = async () => {
         try {
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
@@ -558,7 +564,7 @@ export function useScanSecure() {
     const getNewTickets = async () => {
         try {
 
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
@@ -582,7 +588,7 @@ export function useScanSecure() {
     const getTicketOwnered = async () => {
         try {
 
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
@@ -605,7 +611,7 @@ export function useScanSecure() {
     }
     const getTicketConsumed = async () => {
         try {
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
@@ -630,7 +636,7 @@ export function useScanSecure() {
     const getRecoverySum = async () => {
         try {
 
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1000)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
@@ -652,20 +658,20 @@ export function useScanSecure() {
         }
     }
 
+    // Event Logs
     useEffect(() => {
         if (!contractIsConnected || !scanSecureSC) return;
-        // getWhitelisted()
-        // getAskCertification()
-        // getCertified()
-        // getEventCreated()
-        // getEventStatusChanged()
-        // getNewTickets()
-        // getTicketOwnered()
-        // getTicketConsumed()
-        // getRecoverySum()
-        // getEventLastId()
-        // getTotalMembers()
-        // loadMoreWhitelisted()
+        getWhitelisted()
+        getAskCertification()
+        getCertified()
+        getEventCreated()
+        getEventStatusChanged()
+        getNewTickets()
+        getTicketOwnered()
+        getTicketConsumed()
+        getRecoverySum()
+        getEventLastId()
+        getTotalMembers()
     }, [scanSecureSC, contractIsConnected])
 
     // export from hook

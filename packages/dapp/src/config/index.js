@@ -19,9 +19,10 @@ import {
  */
 
 export const { chains, publicClient } = configureChains(
-    [mainnet, sepolia, polygon, polygonMumbai, hardhat],
+    // [mainnet, sepolia, polygon, polygonMumbai, hardhat], // Dev local with hardhat
+    [mainnet, sepolia, polygon, polygonMumbai],
     [
-        publicProvider(),
+        // publicProvider(), // Dev local with hardhat
         infuraProvider({ apiKey: `${process.env.NEXT_PUBLIC_INFURA_PROJECT_ID}` })
     ]
 );
