@@ -13,6 +13,8 @@ export default function Home() {
           <Box textAlign="center">
             <Heading>Welcome to</Heading>
             <Heading>0xScanSecure</Heading>
+
+            <Heading size="sm">Only on sepolia or hardhat (local)</Heading>
           </Box>
         </Flex>
         <Box textAlign="center">
