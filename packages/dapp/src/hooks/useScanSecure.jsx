@@ -446,7 +446,7 @@ export function useScanSecure() {
     const getWhitelisted = async () => {
         try {
 
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
@@ -469,7 +469,7 @@ export function useScanSecure() {
     }
     const getAskCertification = async () => {
         try {
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
@@ -492,7 +492,7 @@ export function useScanSecure() {
     }
     const getCertified = async () => {
         try {
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
@@ -515,7 +515,7 @@ export function useScanSecure() {
     }
     const getEventCreated = async () => {
         try {
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
@@ -539,7 +539,7 @@ export function useScanSecure() {
     }
     const getEventStatusChanged = async () => {
         try {
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
@@ -564,7 +564,7 @@ export function useScanSecure() {
     const getNewTickets = async () => {
         try {
 
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
@@ -588,7 +588,7 @@ export function useScanSecure() {
     const getTicketOwnered = async () => {
         try {
 
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
@@ -611,7 +611,7 @@ export function useScanSecure() {
     }
     const getTicketConsumed = async () => {
         try {
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
@@ -636,7 +636,7 @@ export function useScanSecure() {
     const getRecoverySum = async () => {
         try {
 
-            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 2500)
+            const fromBlock = BigInt(Number(await client.getBlockNumber()) - 1500)
 
             const logs = await client.getLogs({
                 address: getAddress(config.contracts.scanSecure.address),
