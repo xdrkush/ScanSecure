@@ -2,7 +2,12 @@
 
 ## Information
 
-(in progress)
+This project was realized during the buterin session of the Alyra school, in order to certify the diploma (or not 😅). It was delivered in 2 weeks, which was a real challenge. It was very instructive, despite a certain frustration at not being able to go further into the application's functionalities due to lack of time.
+
+I hope you like the architecture, I've spent a bit of time on it to try and get the structure as clean as possible.
+
+Enjoy 🎉
+
 ## Video Présentation
 
 [Lien vers la vidéo](https://screenapp.io/app/#/shared/703cce87-718d-4741-b6ee-92918eaf74db)
@@ -25,7 +30,7 @@ yarn
 
 #### DApp
 
-!!! | More Information commands in package.json or docs
+> :bulb: **Tip:** More Information commands in package.json or docs
 
 ###### Dev
 
@@ -77,7 +82,7 @@ yarn sc:deploy:sepolia
 
 #### Script
 
-!!! | Warning with uncomment all
+> :warning: **Warning:** Warning with uncomment all
 
 ###### Dev
 
@@ -276,6 +281,8 @@ ___
 
 ### Docs
 
+> :bulb: **Tip:** I may have forgotten some.
+
 ##### Multiple doc for Front:
 
  - [Raibowkit](https://www.rainbowkit.com/)
@@ -288,6 +295,7 @@ ___
 
 
 ##### Multiple doc for Back:
+
 
  - [Hardhat](https://hardhat.org/)
  - (front & back) [Infura](https://infura.io/)
@@ -304,9 +312,9 @@ ___
 
 ___
 
-
-+ info in ./package.json
 # Address dev hardhat
+
+> :memo: **Note:** provided by hardhat
 
 `Account #0`: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 (10000 ETH)
 
