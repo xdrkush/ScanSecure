@@ -159,7 +159,8 @@ export function useScanSecure() {
                 address: config.contracts.scanSecureERC1155.address,
                 abi: config.contracts.scanSecureERC1155.abi,
                 functionName: 'setApprovalForAll',
-                args: [config.contracts.scanSecure.address, true]
+                args: [config.contracts.scanSecure.address, true],
+                account: address
             })
             await transactionsCompleted(request)
         } catch (error) {
@@ -167,8 +168,10 @@ export function useScanSecure() {
         }
     }
     const calcFees = (_price) => {
+        console.log('calcFees', _price)
         const fee = _price * BigInt(5) / BigInt(100);
         const total = BigInt(_price + fee)
+        console.log('fee', fee, "total", total, "_price", _price, 'ParseEther', parseEther(total.toString()))
 
         return {
             price: _price, fee,
@@ -210,7 +213,8 @@ export function useScanSecure() {
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'register',
                 account,
-                args: [String(_pseudo)]
+                args: [String(_pseudo)],
+                account: address
             })
             await transactionsCompleted(request)
             await checkRoles()
@@ -224,7 +228,8 @@ export function useScanSecure() {
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'askCertification',
-                args: [String(_message)]
+                args: [String(_message)],
+                account: address
             })
             await transactionsCompleted(request)
         } catch (error) {
@@ -238,7 +243,8 @@ export function useScanSecure() {
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'certificationAnswer',
-                args: [_bool, _address]
+                args: [_bool, _address],
+                account: address
             })
             await transactionsCompleted(request)
         } catch (error) {
@@ -251,7 +257,8 @@ export function useScanSecure() {
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'createEvent',
-                args: [_title]
+                args: [_title],
+                account: address
             })
             await transactionsCompleted(request)
         } catch (error) {
@@ -265,7 +272,8 @@ export function useScanSecure() {
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'createTickets',
-                args: [_event_id, _quantity, _price]
+                args: [_event_id, _quantity, _price],
+                account: address
             })
             await transactionsCompleted(request)
         } catch (error) {
@@ -278,7 +286,8 @@ export function useScanSecure() {
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'setStatusEvent',
-                args: [_event_id]
+                args: [_event_id],
+                account: address
             })
             await transactionsCompleted(request)
         } catch (error) {
@@ -287,14 +296,15 @@ export function useScanSecure() {
     }
     const buyTicket = async (_event_id, _quantity) => {
         try {
-            const { price } = await getTicket(_event_id, 0)
-            await approveTether(calcFees(price * BigInt(_quantity)).total)
+            const ticket = (await getTicket(Number(_event_id), 0))
+            await approveTether(calcFees(ticket.price * BigInt(_quantity)).total)
 
             const { request } = await prepareWriteContract({
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'buyTicket',
-                args: [_event_id, _quantity]
+                args: [_event_id, _quantity],
+                account: address
             })
             await transactionsCompleted(request)
         } catch (error) {
@@ -309,7 +319,8 @@ export function useScanSecure() {
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'offerTicket',
-                args: [_address, _event_id, _ticket_id]
+                args: [_address, _event_id, _ticket_id],
+                account: address
             })
             await transactionsCompleted(request)
         } catch (error) {
@@ -322,7 +333,8 @@ export function useScanSecure() {
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'consumeTicket',
-                args: [_event_id, _ticket_id]
+                args: [_event_id, _ticket_id],
+                account: address
             })
             await transactionsCompleted(request)
         } catch (error) {
@@ -335,7 +347,8 @@ export function useScanSecure() {
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'sumRecovery',
-                args: []
+                args: [],
+                account: address
             })
             await transactionsCompleted(request)
         } catch (error) {
@@ -352,7 +365,8 @@ export function useScanSecure() {
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'getUser',
-                args: [getAddress(address)]
+                args: [getAddress(address)],
+                account: address
             })
             return data
         } catch (error) {
@@ -365,7 +379,8 @@ export function useScanSecure() {
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'getEvent',
-                args: [_event_id]
+                args: [_event_id],
+                account: address
             })
             return data
         } catch (error) {
@@ -378,7 +393,8 @@ export function useScanSecure() {
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'getTicket',
-                args: [_event_id, _ticket_id]
+                args: [_event_id, _ticket_id],
+                account: address
             })
             return data
         } catch (error) {
@@ -391,7 +407,8 @@ export function useScanSecure() {
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'getTickets',
-                args: [_event_id, _addr]
+                args: [_event_id, _addr],
+                account: address
             })
             return data
         } catch (error) {
@@ -404,6 +421,7 @@ export function useScanSecure() {
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'eventLastId',
+                account: address
             })
 
             setEventLastId(Number(data))
@@ -417,6 +435,7 @@ export function useScanSecure() {
                 address: config.contracts.scanSecure.address,
                 abi: config.contracts.scanSecure.abi,
                 functionName: 'totalMembers',
+                account: address
             })
 
             setTotalMembers(Number(data))

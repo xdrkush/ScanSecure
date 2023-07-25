@@ -54,7 +54,7 @@ abstract contract ScanSecureTicketManager is ScanSecureAccess {
      * @param _event_id The identifier of the event.
      * @param _addr The address of the members.
      * @return The uint[] of Ticket id of event for user, owner.
-     * @notice The ticket must exist in the ticketsValidity mapping.
+     * @notice The ticket must exist in the ticketsUser mapping.
      */
     function getTickets(
         uint _event_id,

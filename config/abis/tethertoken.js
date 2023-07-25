@@ -1,7 +1,7 @@
-// sepolia: 0xB88d62D2aCD0CD72da3c2C28F7C4a907b4a4e7Dd
+// sepolia: 0x698cF7bc2Cc1BFB7eA4bE5E77c6C6A0a99F3d9D6
 // mumbai: 0x5f3042B8939ffd82a84B62c44c01bfA11232129A
 // local: 0x5FbDB2315678afecb367f032d93F642f64180aa3
-const address = "0xB88d62D2aCD0CD72da3c2C28F7C4a907b4a4e7Dd"
+const address = "0x698cF7bc2Cc1BFB7eA4bE5E77c6C6A0a99F3d9D6"
 
 const abi = [
     {

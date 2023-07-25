@@ -18,12 +18,15 @@ import {
  *  Config: Wagmi, Rainbowkit
  */
 
+const devENV = process.env.NEXT_PUBLIC_CLIENT_CHAIN === 'hardhat'
+
 export const { chains, publicClient } = configureChains(
-    // [mainnet, sepolia, polygon, polygonMumbai, hardhat], // Dev local with hardhat
-    [mainnet, sepolia, polygon, polygonMumbai],
+    devENV ? [mainnet, sepolia, polygon, polygonMumbai, hardhat] // Dev local with hardhat
+        : [mainnet, sepolia, polygon, polygonMumbai], 
     [
-        // publicProvider(), // Dev local with hardhat
-        infuraProvider({ apiKey: `${process.env.NEXT_PUBLIC_INFURA_PROJECT_ID}` })
+        devENV ?
+            publicProvider() // Dev local with hardhat
+            : infuraProvider({ apiKey: `${process.env.NEXT_PUBLIC_INFURA_PROJECT_ID}` })
     ]
 );
 const { wallets } = getDefaultWallets({

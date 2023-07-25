@@ -208,18 +208,6 @@ const answerCertification = async () => {
     } catch (error) {
         console.log(error.message)
     }
-    try {
-        const data = await client.writeContract({
-            abi: config.contracts.scanSecure.abi,
-            address: config.contracts.scanSecure.address,
-            functionName: 'certificationAnswer',
-            account: owner,
-            args: [true, fourth.address]
-        })
-        console.log('certificationAnswer user 2', data)
-    } catch (error) {
-        console.log(error.message)
-    }
 }
 const createEvent = async () => {
     // CreateEvent
@@ -281,7 +269,7 @@ const createTicket = async () => {
             address: config.contracts.scanSecure.address,
             functionName: 'createTickets',
             account: second,
-            args: [0, 1000, 10 * (10 ** 9)]
+            args: [0, 1000, 10]
         })
         const data2 = await client.writeContract({
             abi: config.contracts.scanSecureERC1155.abi,
@@ -300,7 +288,7 @@ const createTicket = async () => {
             address: config.contracts.scanSecure.address,
             functionName: 'createTickets',
             account: third,
-            args: [3, 1500, 20 * (10 ** 9)]
+            args: [3, 1500, 20]
         })
         const data2 = await client.writeContract({
             abi: config.contracts.scanSecureERC1155.abi,
@@ -609,7 +597,7 @@ const getters = async () => {
             address: config.contracts.scanSecure.address,
             functionName: 'totalMembers'
         })
-        console.log('GetTickets 3', data)
+        console.log('totalMembers', data)
     } catch (error) {
         console.log(error.message)
     }
@@ -621,7 +609,52 @@ const getters = async () => {
             functionName: 'hasRole',
             args: [ADMIN_ROLE, owner.address]
         })
-        console.log('GetTickets 3', data, owner.address)
+        console.log('hasRole owner', data, owner.address)
+    } catch (error) {
+        console.log(error.message)
+    }
+
+    try {
+        const data = await client.readContract({
+            abi: config.contracts.scanSecureERC1155.abi,
+            address: config.contracts.scanSecureERC1155.address,
+            functionName: 'isApprovedForAll',
+            args: [owner.address, config.contracts.scanSecure.address]
+        })
+        console.log('isApprovedForAll owner', data)
+    } catch (error) {
+        console.log(error.message)
+    }
+    try {
+        const data = await client.readContract({
+            abi: config.contracts.scanSecureERC1155.abi,
+            address: config.contracts.scanSecureERC1155.address,
+            functionName: 'isApprovedForAll',
+            args: [second.address, config.contracts.scanSecure.address]
+        })
+        console.log('isApprovedForAll second', data)
+    } catch (error) {
+        console.log(error.message)
+    }
+    try {
+        const data = await client.readContract({
+            abi: config.contracts.scanSecureERC1155.abi,
+            address: config.contracts.scanSecureERC1155.address,
+            functionName: 'isApprovedForAll',
+            args: [third.address, config.contracts.scanSecure.address]
+        })
+        console.log('isApprovedForAll third', data)
+    } catch (error) {
+        console.log(error.message)
+    }
+    try {
+        const data = await client.readContract({
+            abi: config.contracts.scanSecureERC1155.abi,
+            address: config.contracts.scanSecureERC1155.address,
+            functionName: 'isApprovedForAll',
+            args: [fourth.address, config.contracts.scanSecure.address]
+        })
+        console.log('isApprovedForAll fourth', data)
     } catch (error) {
         console.log(error.message)
     }
@@ -641,7 +674,7 @@ async function init() {
     // await offerTicket()
     // await consumeTicket()
     // await sumRecovery()
-    // await getters()
+    await getters()
 
 }
 
